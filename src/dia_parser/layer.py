@@ -16,8 +16,8 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-from ns import NS
-from obj import parse_object
+from .ns import NS
+from .obj import parse_object
 
 class Layer:
     name = ''

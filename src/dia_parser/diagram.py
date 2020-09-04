@@ -16,10 +16,10 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-from attributes import parse_attributes
-from obj import parse_object
-from layer import parse_layer
-from ns import NS
+from .attributes import parse_attributes
+from .obj import parse_object
+from .layer import parse_layer
+from .ns import NS
 
 class Diagram:
     layers = None

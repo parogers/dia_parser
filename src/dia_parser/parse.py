@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 #
 # dia_parser - A module for parsing dia diagram files
 # Copyright (C) 2020  Peter Rogers (peter.rogers@gmail.com)
@@ -18,11 +17,10 @@
 #
 
 import gzip
-import sys
 from xml.etree import ElementTree
 
-from ns import NS
-from diagram import parse_diagram
+from .ns import NS
+from .diagram import parse_diagram
 
 def read_gzip_file(src):
     return gzip.open(src).read()
@@ -46,12 +44,3 @@ def parse_dia_file(src):
     assert root.tag == NS + 'diagram'
 
     return parse_diagram(root)
-
-
-if __name__ == '__main__':
-    diagram = parse_dia_file(sys.argv[1])
-    for layer in diagram.layers:
-        print(layer.name)
-        for obj in layer.iter_objects():
-            print('   ', obj.obj_id, obj)
-
