@@ -16,15 +16,13 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+import typing
+
 from .ns import NS
 from .obj import parse_object
 from .attributes import parse_attributes
 
-class Group:
-    '''Represents a dia group node.'''
-
-    attributes = None
-
+class GroupBase:
     def __init__(self):
         self.objects = []
         self.groups = []
@@ -41,7 +39,13 @@ class Group:
             yield from group.iter_objects()
 
 
-class Layer(Group):
+class Group(GroupBase):
+    '''Represents a dia group node.'''
+
+    attributes = None
+
+
+class Layer(GroupBase):
     '''Represents a dia layer node.'''
 
     name = ''
@@ -57,6 +61,29 @@ class Layer(Group):
             raise KeyError
 
 
+def parse_group_base(parent_node, layer):
+    '''Returns a tuple (Object list, Group list, Attribute dict) from the given top-level XML node'''
+
+    objects = []
+    groups = []
+
+    for node in parent_node.findall(NS + 'object'):
+        objects.append(
+            parse_object(node, layer)
+        )
+
+    for node in parent_node.findall(NS + 'group'):
+        groups.append(
+            parse_group(node, layer)
+        )
+
+    return (
+        objects,
+        groups,
+        parse_attributes(parent_node),
+    )
+
+
 def parse_layer(layer_node):
     '''Returns a Layer instance given a layer XML node'''
 
@@ -66,13 +93,9 @@ def parse_layer(layer_node):
     layer.connectable = layer_node.attrib['connectable'] == 'true'
     layer.active = layer_node.attrib['active'] == 'true'
 
-    for obj_node in layer_node.findall(NS + 'object'):
-        obj = parse_object(obj_node, layer)
-        layer.objects.append(obj)
-
-    for group_node in layer_node.findall(NS + 'group'):
-        group = parse_group(group_node, layer)
-        layer.groups.append(group)
+    objects, groups, _ = parse_group_base(layer_node, layer)
+    layer.objects = objects
+    layer.groups = groups
 
     return layer
 
@@ -80,17 +103,10 @@ def parse_layer(layer_node):
 def parse_group(group_node, layer):
     '''Returns a Group instance given a group XML node'''
 
+    objects, groups, attributes = parse_group_base(group_node, layer)
+
     group = Group()
-    group.attributes = parse_attributes(group_node)
-
-    for obj_node in group_node.findall(NS + 'object'):
-        group.objects.append(
-            parse_object(obj_node, layer)
-        )
-
-    for node in group_node.findall(NS + 'group'):
-        group.groups.append(
-            parse_group(node, layer)
-        )
-
+    group.objects = objects
+    group.groups = groups
+    group.attributes = attributes
     return group
