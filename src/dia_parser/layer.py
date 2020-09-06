@@ -18,20 +18,16 @@
 
 from .ns import NS
 from .obj import parse_object
+from .attributes import parse_attributes
 
-class Layer:
-    name = ''
+class Group:
+    '''Represents a dia group node.'''
+
+    attributes = None
 
     def __init__(self):
         self.objects = []
-
-    def __getitem__(self, obj_id):
-        try:
-            return next(filter(
-                lambda obj : obj.obj_id == obj_id, self.objects
-            ))
-        except StopIteration:
-            raise KeyError
+        self.groups = []
 
     def iter_line_objects(self):
         return filter(
@@ -40,17 +36,61 @@ class Layer:
         )
 
     def iter_objects(self):
-        # TODO - handle groups
-        return iter(self.objects)
+        yield from self.objects
+        for group in self.groups:
+            yield from group.iter_objects()
+
+
+class Layer(Group):
+    '''Represents a dia layer node.'''
+
+    name = ''
+
+    def __getitem__(self, obj_id):
+        '''Returns an object matching the given object ID'''
+
+        try:
+            return next(filter(
+                lambda obj : obj.obj_id == obj_id, self.objects
+            ))
+        except StopIteration:
+            raise KeyError
 
 
 def parse_layer(layer_node):
+    '''Returns a Layer instance given a layer XML node'''
+
     layer = Layer()
     layer.name = layer_node.attrib['name']
     layer.visible = layer_node.attrib['visible'] == 'true'
     layer.connectable = layer_node.attrib['connectable'] == 'true'
     layer.active = layer_node.attrib['active'] == 'true'
+
     for obj_node in layer_node.findall(NS + 'object'):
         obj = parse_object(obj_node, layer)
         layer.objects.append(obj)
+
+    for group_node in layer_node.findall(NS + 'group'):
+        group = parse_group(group_node, layer)
+        layer.groups.append(group)
+
     return layer
+
+
+def parse_group(group_node, layer):
+    '''Returns a Group instance given a group XML node'''
+
+    group = Group()
+    group.attributes = parse_attributes(group_node)
+
+    for obj_node in group_node.findall(NS + 'object'):
+        group.objects.append(
+            parse_object(obj_node, layer)
+        )
+
+    for node in group_node.findall(NS + 'group'):
+        group.groups.append(
+            parse_group(node, layer)
+        )
+
+    return group
