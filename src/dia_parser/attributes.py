@@ -18,13 +18,6 @@
 
 from .ns import NS
 
-class AttribValue:
-    value_type = None
-    value = None
-
-    def __repr__(self):
-        return self.value_type + '/' + self.value
-
 def parse_real(value_node):
     return float(value_node.attrib['val'])
 
