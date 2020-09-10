@@ -22,7 +22,7 @@ def parse_real(value_node):
     return float(value_node.attrib['val'])
 
 def parse_boolean(value_node):
-    return bool(value_node.attrib['val'])
+    return value_node.attrib['val'] == 'true'
 
 def parse_point(value_node):
     args = value_node.attrib['val'].split(',')
