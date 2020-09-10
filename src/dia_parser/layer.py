@@ -91,7 +91,7 @@ def parse_layer(layer_node):
     layer.name = layer_node.attrib['name']
     layer.visible = layer_node.attrib['visible'] == 'true'
     layer.connectable = layer_node.attrib['connectable'] == 'true'
-    layer.active = layer_node.attrib['active'] == 'true'
+    layer.active = layer_node.attrib.get('active', None) == 'true'
 
     objects, groups, _ = parse_group_base(layer_node, layer)
     layer.objects = objects
