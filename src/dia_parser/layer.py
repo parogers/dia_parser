@@ -24,8 +24,7 @@ from .attributes import parse_attributes
 
 class GroupBase:
     def __init__(self):
-        self.objects = []
-        self.groups = []
+        self.children = []
 
     def iter_line_objects(self):
         return filter(
@@ -34,9 +33,11 @@ class GroupBase:
         )
 
     def iter_objects(self):
-        yield from self.objects
-        for group in self.groups:
-            yield from group.iter_objects()
+        for child in self.children:
+            if hasattr(child, 'children'):
+                yield from child.iter_objects()
+            else:
+                yield child
 
 
 class Group(GroupBase):
@@ -64,22 +65,20 @@ class Layer(GroupBase):
 def parse_group_base(parent_node, layer):
     '''Returns a tuple (Object list, Group list, Attribute dict) from the given top-level XML node'''
 
-    objects = []
-    groups = []
+    children = []
 
     for node in parent_node.findall(NS + 'object'):
-        objects.append(
+        children.append(
             parse_object(node, layer)
         )
 
     for node in parent_node.findall(NS + 'group'):
-        groups.append(
+        children.append(
             parse_group(node, layer)
         )
 
     return (
-        objects,
-        groups,
+        children,
         parse_attributes(parent_node),
     )
 
@@ -93,9 +92,8 @@ def parse_layer(layer_node):
     layer.connectable = layer_node.attrib['connectable'] == 'true'
     layer.active = layer_node.attrib.get('active', None) == 'true'
 
-    objects, groups, _ = parse_group_base(layer_node, layer)
-    layer.objects = objects
-    layer.groups = groups
+    children, _ = parse_group_base(layer_node, layer)
+    layer.children = children
 
     return layer
 
@@ -103,10 +101,9 @@ def parse_layer(layer_node):
 def parse_group(group_node, layer):
     '''Returns a Group instance given a group XML node'''
 
-    objects, groups, attributes = parse_group_base(group_node, layer)
+    children, attributes = parse_group_base(group_node, layer)
 
     group = Group()
-    group.objects = objects
-    group.groups = groups
+    group.children = children
     group.attributes = attributes
     return group
