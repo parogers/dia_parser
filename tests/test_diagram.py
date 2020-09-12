@@ -2,7 +2,7 @@
 import site
 site.addsitedir('src')
 
-from dia_parser import Diagram, DiagramData, Layer, Group, Object
+from dia_parser import Diagram, DiagramData, Layer, Group, Object, Connection
 
 def test_create_empty_diagram():
     diagram = Diagram(
@@ -78,3 +78,24 @@ def test_diagram_iterates_layers():
     )
     assert list(diagram) == [layer1, layer2, layer3]
     
+def test_diagram_iterates_over_lines():
+    obj1 = Object(obj_id='1')
+    obj2 = Object(obj_id='2')
+    obj = Object(
+        connections=(
+            Connection(to_id=obj1.obj_id),
+            Connection(to_id=obj2.obj_id),
+        )
+    )
+    diagram = Diagram(
+        DiagramData(),
+        layers=[
+            Layer([
+                obj1,
+                obj2,
+                obj,
+            ])
+        ]
+    )
+
+    assert list(diagram.iter_line_objects()) == [obj]
