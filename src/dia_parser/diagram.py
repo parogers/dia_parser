@@ -24,8 +24,10 @@ from .ns import NS
 class Diagram:
     layers = None
 
-    def __init__(self):
-        self.layers = []
+    def __init__(self, diagram_data, layers):
+        self.layers = list(layers)
+        for layer in self.layers:
+            layer.diagram = self
 
     def __getitem__(self, name):
         try:
@@ -39,23 +41,31 @@ class Diagram:
 class DiagramData:
     attributes = None
 
+    def __init__(self, attributes=None):
+        if not attributes: attributes = {}
+        self.attributes = attributes
+
 
 def parse_diagramdata(diagramdata_node):
-    data = DiagramData()
-    data.attributes = parse_attributes(diagramdata_node)
-    return data
+    return DiagramData(
+        parse_attributes(diagramdata_node)
+    )
 
 
 def parse_diagram(diagram_node):
-    diagram = Diagram()
-
     node = diagram_node.find(NS + 'diagramdata')
     if node:
-        diagram.diagram_data = parse_diagramdata(node)
+        diagram_data = parse_diagramdata(node)
+    else:
+        diagram_data = DiagramData({})
 
+    layers = (
+        parse_layer(node)
+        for node in diagram_node.findall(NS + 'layer')
+    )
 
-    for layer_node in diagram_node.findall(NS + 'layer'):
-        layer = parse_layer(layer_node)
-        diagram.layers.append(layer)
-    return diagram
+    return Diagram(
+        diagram_data,
+        layers
+    )
 
