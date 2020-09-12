@@ -34,6 +34,11 @@ class Diagram:
             for obj in self.iter_objects()
         }
 
+    def __iter__(self):
+        '''Returns an iterator over the layers in this diagram'''
+
+        return iter(self.layers)
+
     def iter_objects(self):
         '''Returns an iterator over all objects (Object) in this diagram'''
 
