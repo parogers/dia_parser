@@ -25,3 +25,18 @@ def test_create_diagram_with_layers():
         ]
     )
     assert diagram.layers == [layer1, layer2, layer3]
+
+def test_it_assigns_diagram_to_layer():
+    layer1 = Layer([])
+    layer2 = Layer([])
+    diagram = Diagram(
+        DiagramData(),
+        layers=[
+            layer1,
+            layer2,
+        ]
+    )
+
+    assert layer1.diagram == diagram
+    assert layer2.diagram == diagram
+

@@ -36,6 +36,17 @@ class Object:
         )
 
     @property
+    def diagram(self):
+        node = self.parent
+        while node:
+            if hasattr(node, 'diagram'):
+                return node.diagram
+            if not hasattr(node, 'parent'):
+                break
+            node = node.parent
+        return None
+
+    @property
     def connection_to(self):
         assert self.is_line
         return self.connections[1]
