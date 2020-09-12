@@ -40,7 +40,12 @@ class Object:
         self.obj_type = obj_type
         self.version = version
         self.attributes = attributes
-        self.connections = connections
+
+        if not connections: connections = []
+
+        self.connections = list(connections)
+        for conn in self.connections:
+            conn.obj = self
 
     def __repr__(self):
         return '<Object id="{}" type="{}" version="{}">'.format(
@@ -62,13 +67,29 @@ class Object:
 
     @property
     def connection_to(self):
+        '''The connection representing the head of this line object (throws AssertionError if not a line)'''
+
         assert self.is_line
         return self.connections[1]
 
     @property
     def connection_from(self):
+        '''The connection representing the tail of this line object (throws AssertionError if not a line)'''
+
         assert self.is_line
         return self.connections[0]
+
+    @property
+    def connected_to(self):
+        '''The object pointed to by the head of this line (throws AssertionError if not a line)'''
+
+        return self.connection_to.to
+
+    @property
+    def connected_from(self):
+        '''The object pointed to by the tail of this line (throws AssertionError if not a line)'''
+
+        return self.connection_from.to
 
     @property
     def is_line(self):
@@ -88,6 +109,7 @@ class Object:
 
 
 class Connection:
+    obj = None
     handle = ''
     to_id = ''
     connection = 0
@@ -99,7 +121,9 @@ class Connection:
 
     @property
     def to(self):
-        return self.layer[self.to_id]
+        '''The object instance pointed to by this connection'''
+
+        return self.obj.diagram.find_object(self.to_id)
 
 
 def parse_connection(conn_node):

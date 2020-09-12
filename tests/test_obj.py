@@ -40,3 +40,49 @@ def test_object_with_one_connection_is_not_a_line():
         )
     )
     assert not obj.is_line
+
+def test_connection_points_to_object():
+    obj1 = Object(obj_id='1')
+    obj2 = Object(
+        connections=(
+            Connection(to_id=obj1.obj_id),
+        )
+    )
+    diagram = Diagram(
+        DiagramData(),
+        layers=[
+            Layer([
+                obj1,
+                obj2,
+            ])
+        ]
+    )
+    
+    assert obj2.connections[0].to == obj1
+
+def test_line_connects_to_object():
+    obj1 = Object(obj_id='1')
+    obj2 = Object(obj_id='2')
+    line = Object(
+        connections=(
+            Connection(to_id=obj1.obj_id),
+            Connection(to_id=obj2.obj_id),
+        )
+    )
+    diagram = Diagram(
+        DiagramData(),
+        layers=[
+            Layer([
+                obj1,
+                obj2,
+                line,
+            ])
+        ]
+    )
+
+    assert line.connection_from.to == obj1
+    assert line.connection_to.to == obj2
+
+    assert line.connected_from == obj1
+    assert line.connected_to == obj2
+
