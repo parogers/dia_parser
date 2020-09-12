@@ -23,11 +23,27 @@ from .ns import NS
 
 class Diagram:
     layers = None
+    objects = None
 
     def __init__(self, diagram_data, layers):
         self.layers = list(layers)
         for layer in self.layers:
             layer.diagram = self
+        self.objects = {
+            obj.obj_id : obj
+            for obj in self.iter_objects()
+        }
+
+    def iter_objects(self):
+        '''Returns an iterator over all objects (Object) in this diagram'''
+
+        for layer in self.layers:
+            yield from layer.iter_objects()
+
+    def find_object(self, obj_id):
+        '''Returns an Object matching the given ID, or None'''
+
+        return self.objects.get(obj_id, None)
 
     def __getitem__(self, name):
         try:
