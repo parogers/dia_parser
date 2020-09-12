@@ -20,6 +20,40 @@ from .ns import NS
 from .attributes import parse_attributes
 
 
+class LineComponent:
+    def __init__(self, obj):
+        self.obj = obj
+
+    @property
+    def connections(self):
+        return self.obj.connections
+
+    @property
+    def connection_to(self):
+        '''The connection representing the head of this line object (throws AssertionError if not a line)'''
+
+        return self.connections[1]
+
+    @property
+    def connection_from(self):
+        '''The connection representing the tail of this line object (throws AssertionError if not a line)'''
+
+        return self.connections[0]
+
+    @property
+    def connected_to(self):
+        '''The object pointed to by the head of this line (throws AssertionError if not a line)'''
+
+        return self.connection_to.to
+
+    @property
+    def connected_from(self):
+        '''The object pointed to by the tail of this line (throws AssertionError if not a line)'''
+
+        return self.connection_from.to
+
+
+
 class Object:
     obj_id = ''
     obj_type = ''
@@ -27,6 +61,7 @@ class Object:
     attributes = None
     connections = None
     parent = None
+    _line = None
 
     def __init__(
         self,
@@ -47,12 +82,21 @@ class Object:
         for conn in self.connections:
             conn.obj = self
 
+        if self.is_line:
+            self._line = LineComponent(self)
+
     def __repr__(self):
         return '<Object id="{}" type="{}" version="{}">'.format(
             self.obj_id,
             self.obj_type,
             self.version
         )
+
+    @property
+    def as_line(self):
+        if not self.is_line:
+            raise ValueError('object is not a line')
+        return self._line
 
     @property
     def diagram(self):
@@ -66,43 +110,21 @@ class Object:
         return None
 
     @property
-    def connection_to(self):
-        '''The connection representing the head of this line object (throws AssertionError if not a line)'''
-
-        assert self.is_line
-        return self.connections[1]
-
-    @property
-    def connection_from(self):
-        '''The connection representing the tail of this line object (throws AssertionError if not a line)'''
-
-        assert self.is_line
-        return self.connections[0]
-
-    @property
-    def connected_to(self):
-        '''The object pointed to by the head of this line (throws AssertionError if not a line)'''
-
-        return self.connection_to.to
-
-    @property
-    def connected_from(self):
-        '''The object pointed to by the tail of this line (throws AssertionError if not a line)'''
-
-        return self.connection_from.to
-
-    @property
     def is_line(self):
         return self.connections and len(self.connections) == 2
 
     @property
-    def connected_via(self):
+    def connected_to(self):
+        '''A list of connections from this object to other objects in the diagram. 
+        The list contains Connection instance with the 'to' property pointing to
+        other objects.'''
+
         return list(
             map(
-                lambda obj : obj.connection_to,
+                lambda obj : obj.as_line.connection_to,
                 filter(
-                    lambda obj : obj.connection_from.to_id == self.obj_id,
-                    self.layer.iter_line_objects()
+                    lambda obj : obj.as_line.connected_from == self,
+                    self.diagram.iter_line_objects()
                 )
             )
         )

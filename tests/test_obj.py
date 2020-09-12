@@ -60,10 +60,10 @@ def test_connection_points_to_object():
     
     assert obj2.connections[0].to == obj1
 
-def test_line_connects_to_object():
+def test_line_has_connections_to_from_objects():
     obj1 = Object(obj_id='1')
     obj2 = Object(obj_id='2')
-    line = Object(
+    obj = Object(
         connections=(
             Connection(to_id=obj1.obj_id),
             Connection(to_id=obj2.obj_id),
@@ -75,14 +75,36 @@ def test_line_connects_to_object():
             Layer([
                 obj1,
                 obj2,
-                line,
+                obj,
             ])
         ]
     )
 
-    assert line.connection_from.to == obj1
-    assert line.connection_to.to == obj2
+    assert obj.as_line.connection_from.to == obj1
+    assert obj.as_line.connection_to.to == obj2
 
-    assert line.connected_from == obj1
-    assert line.connected_to == obj2
+    assert obj.as_line.connected_from == obj1
+    assert obj.as_line.connected_to == obj2
+
+def test_object_connects_to_other_objects():
+    obj1 = Object(obj_id='1')
+    obj2 = Object(obj_id='2')
+    obj = Object(
+        connections=(
+            Connection(to_id=obj1.obj_id),
+            Connection(to_id=obj2.obj_id),
+        )
+    )
+    diagram = Diagram(
+        DiagramData(),
+        layers=[
+            Layer([
+                obj1,
+                obj2,
+                obj,
+            ])
+        ]
+    )
+
+    assert obj1.connected_to == [obj.connections[1]]
 
