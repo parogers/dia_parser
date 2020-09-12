@@ -26,10 +26,21 @@ class Object:
     version = ''
     attributes = None
     connections = None
-    layer = None
+    parent = None
 
-    def __init__(self, layer):
-        self.layer = layer
+    def __init__(
+        self,
+        obj_id=None,
+        obj_type=None,
+        version=None,
+        attributes=None,
+        connections=None
+    ):
+        self.obj_id = obj_id
+        self.obj_type = obj_type
+        self.version = version
+        self.attributes = attributes
+        self.connections = connections
 
     def __repr__(self):
         return '<Object id="{}" type="{}" version="{}">'.format(
@@ -37,6 +48,17 @@ class Object:
             self.obj_type,
             self.version
         )
+
+    @property
+    def diagram(self):
+        node = self.parent
+        while node:
+            if hasattr(node, 'diagram'):
+                return node.diagram
+            if not hasattr(node, 'parent'):
+                break
+            node = node.parent
+        return None
 
     @property
     def connection_to(self):
@@ -69,42 +91,37 @@ class Connection:
     handle = ''
     to_id = ''
     connection = ''
-    layer = None
-
-    def __init__(self, layer):
-        self.layer = layer
 
     @property
     def to(self):
         return self.layer[self.to_id]
 
 
-def parse_connection(conn_node, layer):
-    conn = Connection(layer)
+def parse_connection(conn_node):
+    conn = Connection()
     conn.handle = conn_node.attrib['handle']
     conn.to_id = conn_node.attrib['to']
     conn.connection = conn_node.attrib['connection']
     return conn
 
 
-def parse_connections(obj_node, layer):
+def parse_connections(obj_node):
     connections_node = obj_node.find(NS + 'connections')
     if not connections_node:
         return []
 
     return [
-        parse_connection(conn_node, layer)
+        parse_connection(conn_node)
         for conn_node in connections_node.findall(NS + 'connection')
     ]
 
 
-def parse_object(obj_node, layer):
-    obj = Object(layer)
-    obj.obj_id = obj_node.attrib['id']
-    obj.obj_type = obj_node.attrib['type']
-    obj.version = obj_node.attrib['version']
-    obj.attributes = parse_attributes(obj_node)
-    obj.connections = parse_connections(obj_node, layer)
-    return obj
-
+def parse_object(obj_node):
+    return Object(
+        obj_id=obj_node.attrib['id'],
+        obj_type=obj_node.attrib['type'],
+        version=obj_node.attrib['version'],
+        attributes=parse_attributes(obj_node),
+        connections=parse_connections(obj_node),
+    )
 
