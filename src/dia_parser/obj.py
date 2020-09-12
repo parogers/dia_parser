@@ -90,7 +90,12 @@ class Object:
 class Connection:
     handle = ''
     to_id = ''
-    connection = ''
+    connection = 0
+
+    def __init__(self, handle='', to_id='', connection=0):
+        self.handle = handle
+        self.to_id = to_id
+        self.connection = connection
 
     @property
     def to(self):
@@ -98,11 +103,11 @@ class Connection:
 
 
 def parse_connection(conn_node):
-    conn = Connection()
-    conn.handle = conn_node.attrib['handle']
-    conn.to_id = conn_node.attrib['to']
-    conn.connection = conn_node.attrib['connection']
-    return conn
+    return Connection(
+        handle=conn_node.attrib['handle'],
+        to_id=conn_node.attrib['to'],
+        connection=conn_node.attrib['connection'],
+    )
 
 
 def parse_connections(obj_node):
