@@ -48,6 +48,11 @@ class Group(GroupBase):
     attributes = None
     parent = None
 
+    def __init__(self, children, attributes=None):
+        super().__init__(children)
+        if not attributes: attributes = {}
+        self.attributes = attributes
+
 
 class Layer(GroupBase):
     '''Represents a dia layer node.'''
@@ -106,6 +111,7 @@ def parse_group(group_node):
 
     children, attributes = parse_group_base(group_node)
 
-    group = Group(children)
-    group.attributes = attributes
-    return group
+    return Group(
+        children=children,
+        attributes=attributes
+    )
