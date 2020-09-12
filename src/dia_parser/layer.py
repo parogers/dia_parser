@@ -23,8 +23,10 @@ from .obj import parse_object
 from .attributes import parse_attributes
 
 class GroupBase:
-    def __init__(self):
-        self.children = []
+    def __init__(self, children):
+        self.children = list(children)
+        for node in self.children:
+            node.parent = self
 
     def iter_line_objects(self):
         return filter(
@@ -44,12 +46,14 @@ class Group(GroupBase):
     '''Represents a dia group node.'''
 
     attributes = None
+    parent = None
 
 
 class Layer(GroupBase):
     '''Represents a dia layer node.'''
 
     name = ''
+    diagram = None
 
     def __getitem__(self, obj_id):
         '''Returns an object matching the given object ID'''
@@ -62,19 +66,19 @@ class Layer(GroupBase):
             raise KeyError
 
 
-def parse_group_base(parent_node, layer):
+def parse_group_base(parent_node):
     '''Returns a tuple (Object list, Group list, Attribute dict) from the given top-level XML node'''
 
     children = []
 
     for node in parent_node.findall(NS + 'object'):
         children.append(
-            parse_object(node, layer)
+            parse_object(node)
         )
 
     for node in parent_node.findall(NS + 'group'):
         children.append(
-            parse_group(node, layer)
+            parse_group(node)
         )
 
     return (
@@ -86,24 +90,22 @@ def parse_group_base(parent_node, layer):
 def parse_layer(layer_node):
     '''Returns a Layer instance given a layer XML node'''
 
-    layer = Layer()
+    children, _ = parse_group_base(layer_node)
+
+    layer = Layer(children)
     layer.name = layer_node.attrib['name']
     layer.visible = layer_node.attrib['visible'] == 'true'
     layer.connectable = layer_node.attrib['connectable'] == 'true'
     layer.active = layer_node.attrib.get('active', None) == 'true'
 
-    children, _ = parse_group_base(layer_node, layer)
-    layer.children = children
-
     return layer
 
 
-def parse_group(group_node, layer):
+def parse_group(group_node):
     '''Returns a Group instance given a group XML node'''
 
-    children, attributes = parse_group_base(group_node, layer)
+    children, attributes = parse_group_base(group_node)
 
-    group = Group()
-    group.children = children
+    group = Group(children)
     group.attributes = attributes
     return group
