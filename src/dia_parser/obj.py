@@ -28,6 +28,20 @@ class Object:
     connections = None
     parent = None
 
+    def __init__(
+        self,
+        obj_id=None,
+        obj_type=None,
+        version=None,
+        attributes=None,
+        connections=None
+    ):
+        self.obj_id = obj_id
+        self.obj_type = obj_type
+        self.version = version
+        self.attributes = attributes
+        self.connections = connections
+
     def __repr__(self):
         return '<Object id="{}" type="{}" version="{}">'.format(
             self.obj_id,
@@ -103,12 +117,11 @@ def parse_connections(obj_node):
 
 
 def parse_object(obj_node):
-    obj = Object()
-    obj.obj_id = obj_node.attrib['id']
-    obj.obj_type = obj_node.attrib['type']
-    obj.version = obj_node.attrib['version']
-    obj.attributes = parse_attributes(obj_node)
-    obj.connections = parse_connections(obj_node)
-    return obj
-
+    return Object(
+        obj_id=obj_node.attrib['id'],
+        obj_type=obj_node.attrib['type'],
+        version=obj_node.attrib['version'],
+        attributes=parse_attributes(obj_node),
+        connections=parse_connections(obj_node),
+    )
 
