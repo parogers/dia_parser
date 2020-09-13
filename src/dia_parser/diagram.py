@@ -23,13 +23,13 @@ from .ns import NS
 
 class Diagram:
     layers = None
-    objects = None
+    object_map = None
 
     def __init__(self, diagram_data, layers):
         self.layers = list(layers)
         for layer in self.layers:
             layer.diagram = self
-        self.objects = {
+        self.object_map = {
             obj.obj_id : obj
             for obj in self.iter_objects()
         }
@@ -38,6 +38,17 @@ class Diagram:
         '''Returns an iterator over the layers in this diagram'''
 
         return iter(self.layers)
+
+
+    def __getitem__(self, name):
+        '''Returns the layer matching the given name'''
+
+        try:
+            return next(filter(
+                lambda layer : layer.name == name, self.layers
+            ))
+        except StopIteration:
+            raise KeyError
 
     def iter_objects(self):
         '''Returns an iterator over all objects (Object) in this diagram'''
@@ -54,15 +65,13 @@ class Diagram:
     def find_object(self, obj_id):
         '''Returns an Object matching the given ID, or None'''
 
-        return self.objects.get(obj_id, None)
+        return self.object_map.get(obj_id, None)
 
-    def __getitem__(self, name):
-        try:
-            return next(filter(
-                lambda layer : layer.name == name, self.layers
-            ))
-        except StopIteration:
-            raise KeyError
+    @property
+    def objects(self):
+        '''The list of all objects in the diagram'''
+
+        return list(self.iter_objects())
 
 
 class DiagramData:
