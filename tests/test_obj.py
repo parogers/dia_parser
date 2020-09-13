@@ -1,4 +1,5 @@
 
+import pytest
 import site
 site.addsitedir('src')
 
@@ -59,6 +60,44 @@ def test_connection_points_to_object():
     )
     
     assert obj2.connections[0].to == obj1
+
+def test_object_has_line_sub_component():
+    obj1 = Object(obj_id='1')
+    obj2 = Object(obj_id='2')
+    obj = Object(
+        connections=(
+            Connection(to_id=obj1.obj_id),
+            Connection(to_id=obj2.obj_id),
+        )
+    )
+    diagram = Diagram(
+        DiagramData(),
+        layers=[
+            Layer([
+                obj1,
+                obj2,
+                obj,
+            ])
+        ]
+    )
+
+    assert obj.as_line
+
+
+def test_non_line_object_raises_exception_as_line():
+    obj = Object(obj_id='1')
+    diagram = Diagram(
+        DiagramData(),
+        layers=[
+            Layer([
+                obj,
+            ])
+        ]
+    )
+
+    with pytest.raises(ValueError):
+        obj.as_line
+
 
 def test_line_has_connections_to_from_objects():
     obj1 = Object(obj_id='1')
