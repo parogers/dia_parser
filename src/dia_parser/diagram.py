@@ -45,6 +45,12 @@ class Diagram:
         for layer in self.layers:
             yield from layer.iter_objects()
 
+    def iter_line_objects(self):
+        return filter(
+            lambda obj : hasattr(obj, 'is_line') and obj.is_line,
+            self.iter_objects()
+        )
+
     def find_object(self, obj_id):
         '''Returns an Object matching the given ID, or None'''
 

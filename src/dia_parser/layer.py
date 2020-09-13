@@ -28,12 +28,6 @@ class GroupBase:
         for node in self.children:
             node.parent = self
 
-    def iter_line_objects(self):
-        return filter(
-            lambda obj : obj.is_line,
-            self.iter_objects()
-        )
-
     def iter_objects(self):
         for child in self.children:
             if hasattr(child, 'children'):
