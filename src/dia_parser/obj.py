@@ -119,15 +119,21 @@ class Object:
         The list contains Connection instance with the 'to' property pointing to
         other objects.'''
 
-        return list(
-            map(
-                lambda obj : obj.as_line.connection_to,
-                filter(
-                    lambda obj : obj.as_line.connected_from == self,
-                    self.diagram.iter_line_objects()
-                )
+        return [
+            obj.as_line.connection_to
+            for obj in filter(
+                lambda obj : obj.as_line.connected_from == self,
+                self.diagram.iter_line_objects()
             )
-        )
+        ]
+
+    @property
+    def connected_to_objs(self):
+        '''Similar to connected_to, but returns a list of Objects instead of Connections'''
+
+        return [
+            conn.to for conn in self.connected_to
+        ]
 
 
 class Connection:
