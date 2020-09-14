@@ -21,6 +21,16 @@ from .obj import parse_object
 from .layer import parse_layer
 from .ns import NS
 
+class ObjectsComponent:
+    def __init__(self, diagram):
+        self.diagram = diagram
+
+    def __iter__(self):
+        return self.diagram.iter_objects()
+
+    def __getitem__(self, obj_name):
+        return self.diagram.object_map[obj_name]
+
 class Diagram:
     layers = None
     object_map = None
@@ -33,12 +43,12 @@ class Diagram:
             obj.obj_id : obj
             for obj in self.iter_objects()
         }
+        self.objects = ObjectsComponent(self)
 
     def __iter__(self):
         '''Returns an iterator over the layers in this diagram'''
 
         return iter(self.layers)
-
 
     def __getitem__(self, name):
         '''Returns the layer matching the given name'''
@@ -66,12 +76,6 @@ class Diagram:
         '''Returns an Object matching the given ID, or None'''
 
         return self.object_map.get(obj_id, None)
-
-    @property
-    def objects(self):
-        '''The list of all objects in the diagram'''
-
-        return list(self.iter_objects())
 
 
 class DiagramData:
