@@ -151,7 +151,7 @@ class Connection:
     def to(self):
         '''The object instance pointed to by this connection'''
 
-        return self.obj.diagram.find_object(self.to_id)
+        return self.obj.diagram.objects[self.to_id]
 
 
 def parse_connection(conn_node):

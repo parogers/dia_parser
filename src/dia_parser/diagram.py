@@ -72,11 +72,6 @@ class Diagram:
             self.iter_objects()
         )
 
-    def find_object(self, obj_id):
-        '''Returns an Object matching the given ID, or None'''
-
-        return self.object_map.get(obj_id, None)
-
 
 class DiagramData:
     attributes = None
