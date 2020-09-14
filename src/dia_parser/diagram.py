@@ -26,24 +26,30 @@ class ObjectsComponent:
         self.diagram = diagram
 
     def __iter__(self):
-        return self.diagram.iter_objects()
+        for layer in self.diagram.layers:
+            yield from layer.iter_objects()
 
     def __getitem__(self, obj_name):
         return self.diagram.object_map[obj_name]
+
+    def filter_lines(self):
+        return filter(
+            lambda obj : hasattr(obj, 'is_line') and obj.is_line,  self
+        )
 
 class Diagram:
     layers = None
     object_map = None
 
     def __init__(self, diagram_data, layers):
+        self.objects = ObjectsComponent(self)
         self.layers = list(layers)
         for layer in self.layers:
             layer.diagram = self
         self.object_map = {
             obj.obj_id : obj
-            for obj in self.iter_objects()
+            for obj in self.objects
         }
-        self.objects = ObjectsComponent(self)
 
     def __iter__(self):
         '''Returns an iterator over the layers in this diagram'''
@@ -59,18 +65,6 @@ class Diagram:
             ))
         except StopIteration:
             raise KeyError
-
-    def iter_objects(self):
-        '''Returns an iterator over all objects (Object) in this diagram'''
-
-        for layer in self.layers:
-            yield from layer.iter_objects()
-
-    def iter_line_objects(self):
-        return filter(
-            lambda obj : hasattr(obj, 'is_line') and obj.is_line,
-            self.iter_objects()
-        )
 
 
 class DiagramData:

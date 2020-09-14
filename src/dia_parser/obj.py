@@ -123,7 +123,7 @@ class Object:
             obj.as_line.connection_to
             for obj in filter(
                 lambda obj : obj.as_line.connected_from == self,
-                self.diagram.iter_line_objects()
+                self.diagram.objects.filter_lines()
             )
         ]
 

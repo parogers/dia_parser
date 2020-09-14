@@ -117,7 +117,7 @@ def test_diagram_iterates_over_lines():
         ]
     )
 
-    assert list(diagram.iter_line_objects()) == [obj]
+    assert list(diagram.objects.filter_lines()) == [obj]
 
 def test_lookup_layer_by_name():
     diagram = Diagram(
