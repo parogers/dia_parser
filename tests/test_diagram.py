@@ -16,6 +16,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+import pytest
 import site
 site.addsitedir('src')
 
@@ -57,15 +58,16 @@ def test_it_assigns_diagram_to_layer():
     assert layer1.diagram == diagram
     assert layer2.diagram == diagram
 
-def test_diagram_find_object_returns_none_if_does_not_exist():
+def test_lookup_object_by_id_raises_keyerror():
     obj = Object()
     diagram = Diagram(
         DiagramData(),
         layers=[]
     )
-    assert diagram.find_object('123') == None
+    with pytest.raises(KeyError):
+        assert diagram.objects['123']
 
-def test_diagram_find_object():
+def test_lookup_object_by_id():
     obj = Object()
     obj.obj_id = '123'
     diagram = Diagram(
@@ -78,7 +80,7 @@ def test_diagram_find_object():
             ])
         ]
     )
-    assert diagram.find_object('123') == obj
+    assert diagram.objects['123'] == obj
 
 def test_diagram_iterates_layers():
     layer1 = Layer([])
@@ -94,7 +96,7 @@ def test_diagram_iterates_layers():
         ]
     )
     assert list(diagram) == [layer1, layer2, layer3]
-    
+
 def test_diagram_iterates_over_lines():
     obj1 = Object(obj_id='1')
     obj2 = Object(obj_id='2')
@@ -115,4 +117,35 @@ def test_diagram_iterates_over_lines():
         ]
     )
 
-    assert list(diagram.iter_line_objects()) == [obj]
+    assert list(diagram.objects.filter_lines()) == [obj]
+
+def test_lookup_layer_by_name():
+    diagram = Diagram(
+        DiagramData(),
+        layers=[
+            Layer([
+            ])
+        ]
+    )
+
+def test_diagram_iterates_over_objects():
+    obj1 = Object(obj_id='1')
+    obj2 = Object(obj_id='2')
+    obj = Object(
+        connections=(
+            Connection(to_id=obj1.obj_id),
+            Connection(to_id=obj2.obj_id),
+        )
+    )
+    diagram = Diagram(
+        DiagramData(),
+        layers=[
+            Layer([
+                obj1,
+                obj2,
+                obj,
+            ])
+        ]
+    )
+
+    assert list(diagram.objects) == [obj1, obj2, obj]

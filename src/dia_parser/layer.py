@@ -54,6 +54,13 @@ class Layer(GroupBase):
     name = ''
     diagram = None
 
+    def __init__(self, children, name='', visible=False, connectable=False, active=False):
+        super().__init__(children=children)
+        self.name = name
+        self.visible = visible
+        self.connectable = connectable
+        self.active = active
+
     def __getitem__(self, obj_id):
         '''Returns an object matching the given object ID'''
 
@@ -91,13 +98,13 @@ def parse_layer(layer_node):
 
     children, _ = parse_group_base(layer_node)
 
-    layer = Layer(children)
-    layer.name = layer_node.attrib['name']
-    layer.visible = layer_node.attrib['visible'] == 'true'
-    layer.connectable = layer_node.attrib['connectable'] == 'true'
-    layer.active = layer_node.attrib.get('active', None) == 'true'
-
-    return layer
+    return Layer(
+        children=children,
+        name=layer_node.attrib['name'],
+        visible=(layer_node.attrib['visible'] == 'true'),
+        connectable=(layer_node.attrib['connectable'] == 'true'),
+        active=(layer_node.attrib.get('active', None) == 'true'),
+    )
 
 
 def parse_group(group_node):

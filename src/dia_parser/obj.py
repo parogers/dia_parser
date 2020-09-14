@@ -123,7 +123,7 @@ class Object:
             obj.as_line.connection_to
             for obj in filter(
                 lambda obj : obj.as_line.connected_from == self,
-                self.diagram.iter_line_objects()
+                self.diagram.objects.filter_lines()
             )
         ]
 
@@ -151,7 +151,7 @@ class Connection:
     def to(self):
         '''The object instance pointed to by this connection'''
 
-        return self.obj.diagram.find_object(self.to_id)
+        return self.obj.diagram.objects[self.to_id]
 
 
 def parse_connection(conn_node):

@@ -21,17 +21,34 @@ from .obj import parse_object
 from .layer import parse_layer
 from .ns import NS
 
+class ObjectsComponent:
+    def __init__(self, diagram):
+        self.diagram = diagram
+
+    def __iter__(self):
+        for layer in self.diagram.layers:
+            yield from layer.iter_objects()
+
+    def __getitem__(self, obj_name):
+        return self.diagram.object_map[obj_name]
+
+    def filter_lines(self):
+        return filter(
+            lambda obj : hasattr(obj, 'is_line') and obj.is_line,  self
+        )
+
 class Diagram:
     layers = None
-    objects = None
+    object_map = None
 
     def __init__(self, diagram_data, layers):
+        self.objects = ObjectsComponent(self)
         self.layers = list(layers)
         for layer in self.layers:
             layer.diagram = self
-        self.objects = {
+        self.object_map = {
             obj.obj_id : obj
-            for obj in self.iter_objects()
+            for obj in self.objects
         }
 
     def __iter__(self):
@@ -39,24 +56,9 @@ class Diagram:
 
         return iter(self.layers)
 
-    def iter_objects(self):
-        '''Returns an iterator over all objects (Object) in this diagram'''
-
-        for layer in self.layers:
-            yield from layer.iter_objects()
-
-    def iter_line_objects(self):
-        return filter(
-            lambda obj : hasattr(obj, 'is_line') and obj.is_line,
-            self.iter_objects()
-        )
-
-    def find_object(self, obj_id):
-        '''Returns an Object matching the given ID, or None'''
-
-        return self.objects.get(obj_id, None)
-
     def __getitem__(self, name):
+        '''Returns the layer matching the given name'''
+
         try:
             return next(filter(
                 lambda layer : layer.name == name, self.layers
