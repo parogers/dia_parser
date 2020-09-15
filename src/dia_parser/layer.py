@@ -66,16 +66,6 @@ class Layer(GroupBase):
         self.connectable = connectable
         self.active = active
 
-    def __getitem__(self, obj_id):
-        '''Returns an object matching the given object ID'''
-
-        try:
-            return next(filter(
-                lambda obj : obj.obj_id == obj_id, self.objects
-            ))
-        except StopIteration:
-            raise KeyError
-
 
 def parse_group_base(parent_node):
     '''Returns a tuple (Object list, Group list, Attribute dict) from the given top-level XML node'''
