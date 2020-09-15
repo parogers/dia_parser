@@ -28,6 +28,11 @@ class GroupBase:
         for node in self.children:
             node.parent = self
 
+    def __iter__(self):
+        '''Returns an iterator over all children'''
+
+        return iter(self.children)
+
     def iter_objects(self):
         for child in self.children:
             if hasattr(child, 'children'):
@@ -60,16 +65,6 @@ class Layer(GroupBase):
         self.visible = visible
         self.connectable = connectable
         self.active = active
-
-    def __getitem__(self, obj_id):
-        '''Returns an object matching the given object ID'''
-
-        try:
-            return next(filter(
-                lambda obj : obj.obj_id == obj_id, self.objects
-            ))
-        except StopIteration:
-            raise KeyError
 
 
 def parse_group_base(parent_node):

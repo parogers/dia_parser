@@ -52,3 +52,18 @@ def test_it_assigns_the_parent_node():
     assert obj2.parent == group1
     assert group2.parent == group1
     assert obj3.parent == group2
+
+def test_it_iterates_over_children():
+    obj1 = Object()
+    obj2 = Object()
+    obj3 = Object()
+    group2 = Group([
+        obj3,
+    ])
+    group1 = Group([
+        obj1,
+        obj2,
+        group2,
+    ])
+
+    assert list(group1) == [obj1, obj2, group2]
