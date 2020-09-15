@@ -28,6 +28,11 @@ class GroupBase:
         for node in self.children:
             node.parent = self
 
+    def __iter__(self):
+        '''Returns an iterator over all children'''
+
+        return iter(self.children)
+
     def iter_objects(self):
         for child in self.children:
             if hasattr(child, 'children'):
