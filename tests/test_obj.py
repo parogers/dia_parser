@@ -27,7 +27,7 @@ def test_object_diagram_property():
     diagram = Diagram(
         DiagramData(),
         layers=[
-            Group([
+            Layer([
                 Group([
                     obj,
                 ])
