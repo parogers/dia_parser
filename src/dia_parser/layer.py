@@ -66,6 +66,10 @@ class Layer(GroupBase):
         self.connectable = connectable
         self.active = active
 
+    @property
+    def is_layer(self):
+        return True
+
 
 def parse_group_base(parent_node):
     '''Returns a tuple (Object list, Group list, Attribute dict) from the given top-level XML node'''

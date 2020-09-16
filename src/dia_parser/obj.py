@@ -99,14 +99,21 @@ class Object:
         return self._line
 
     @property
-    def diagram(self):
+    def layer(self):
+        '''The layer containing this object'''
         node = self.parent
         while node:
-            if hasattr(node, 'diagram'):
-                return node.diagram
+            if hasattr(node, 'is_layer') and node.is_layer:
+                return node
             if not hasattr(node, 'parent'):
                 break
             node = node.parent
+        return None
+
+    @property
+    def diagram(self):
+        if self.layer:
+            return self.layer.diagram
         return None
 
     @property

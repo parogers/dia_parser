@@ -186,3 +186,17 @@ def test_object_connects_to_other_objects():
 
     assert obj1.connected_to_objs == [obj2]
 
+def test_object_diagram_property():
+    obj = Object()
+    layer = Layer([
+        Group([
+            obj,
+        ])
+    ])
+    diagram = Diagram(
+        DiagramData(),
+        layers=[
+            layer,
+        ]
+    )
+    assert obj.layer == layer
