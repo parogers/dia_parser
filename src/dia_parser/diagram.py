@@ -70,6 +70,13 @@ class Diagram:
             pass
         raise KeyError('no such layer: ' + name)
 
+    @property
+    def nodes(self):
+        '''An iterator over all nodes (objects and groups) in this diagram'''
+
+        for layer in self.layers:
+            yield from layer.iter_nodes()
+
 
 class DiagramData:
     attributes = None

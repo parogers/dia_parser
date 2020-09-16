@@ -149,3 +149,28 @@ def test_diagram_iterates_over_objects():
     )
 
     assert list(diagram.objects) == [obj1, obj2, obj]
+
+def test_diagram_iterates_over_nodes():
+    obj1 = Object(obj_id='1')
+    obj2 = Object(obj_id='2')
+    obj = Object(
+        connections=(
+            Connection(to_id=obj1.obj_id),
+            Connection(to_id=obj2.obj_id),
+        )
+    )
+    group = Group([
+        obj1,
+        obj2,
+    ])
+    diagram = Diagram(
+        DiagramData(),
+        layers=[
+            Layer([
+                group,
+                obj,
+            ])
+        ]
+    )
+
+    assert list(diagram.nodes) == [group, obj1, obj2, obj]

@@ -33,6 +33,14 @@ class GroupBase:
 
         return iter(self.children)
 
+    def iter_nodes(self):
+        '''Returns an iterator over all nodes (objects and groups)'''
+
+        for child in self.children:
+            yield child
+            if hasattr(child, 'children'):
+                yield from child.iter_objects()
+
     def iter_objects(self):
         for child in self.children:
             if hasattr(child, 'children'):
