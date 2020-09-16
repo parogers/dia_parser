@@ -64,7 +64,8 @@ class Diagram:
                 lambda layer : layer.name == name, self.layers
             ))
         except StopIteration:
-            raise KeyError
+            pass
+        raise KeyError('no such layer: ' + name)
 
 
 class DiagramData:
