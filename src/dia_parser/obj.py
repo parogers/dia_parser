@@ -53,14 +53,39 @@ class LineComponent:
         return self.connection_from.to
 
 
+class Node:
+    '''A node is the common base class to a dia object, and a dia group'''
 
-class Object:
+    parent = None
+
+    @property
+    def layer(self):
+        '''The layer containing this object'''
+
+        node = self.parent
+        while node:
+            if hasattr(node, 'is_layer') and node.is_layer:
+                return node
+            if not hasattr(node, 'parent'):
+                break
+            node = node.parent
+        return None
+
+    @property
+    def diagram(self):
+        '''The diagram containing this object'''
+
+        if self.layer:
+            return self.layer.diagram
+        return None
+
+
+class Object(Node):
     obj_id = ''
     obj_type = ''
     version = ''
     attributes = None
     connections = None
-    parent = None
     _line = None
 
     def __init__(
@@ -97,24 +122,6 @@ class Object:
         if not self.is_line:
             raise ValueError('object is not a line')
         return self._line
-
-    @property
-    def layer(self):
-        '''The layer containing this object'''
-        node = self.parent
-        while node:
-            if hasattr(node, 'is_layer') and node.is_layer:
-                return node
-            if not hasattr(node, 'parent'):
-                break
-            node = node.parent
-        return None
-
-    @property
-    def diagram(self):
-        if self.layer:
-            return self.layer.diagram
-        return None
 
     @property
     def is_line(self):

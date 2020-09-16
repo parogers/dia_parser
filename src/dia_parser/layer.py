@@ -19,7 +19,7 @@
 import typing
 
 from .ns import NS
-from .obj import parse_object
+from .obj import parse_object, Node
 from .attributes import parse_attributes
 
 class GroupBase:
@@ -41,7 +41,7 @@ class GroupBase:
                 yield child
 
 
-class Group(GroupBase):
+class Group(GroupBase, Node):
     '''Represents a dia group node.'''
 
     attributes = None
