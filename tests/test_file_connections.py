@@ -30,13 +30,13 @@ def test_it_can_load_file():
 
 def test_it_loads_all_objects():
     diagram = parse_dia_file(SRC)
-    assert len(list(diagram.objects)) == 22
+    assert len(list(diagram.objects)) == 24
 
 def test_it_identifies_lines():
     diagram = parse_dia_file(SRC)
-    assert len(list(diagram.objects.filter_lines())) == 11
+    assert len(list(diagram.objects.filter_lines())) == 12
 
-def test_it_has_boxes():
+def test_it_has_objects():
     diagram = parse_dia_file(SRC)
     
     obj0 = diagram.objects['O0']
@@ -71,3 +71,4 @@ def test_it_has_boxes():
     assert obj5.type == 'Standard - Text'
     assert obj5.attributes['text']['string'] == '#Connected to a box#'
     assert obj5.connections[0].to_id == obj3.id
+
