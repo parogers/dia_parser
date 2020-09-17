@@ -40,6 +40,12 @@ def test_line_is_an_object_with_two_connections():
     obj1 = Object(obj_id='1')
     obj2 = Object(obj_id='2')
     obj = Object(
+        attributes={
+            'conn_endpoints' : [
+                (0, 0),
+                (1, 1),
+            ]
+        },
         connections=(
             Connection(to_id=obj1.obj_id),
             Connection(to_id=obj2.obj_id)
@@ -49,15 +55,6 @@ def test_line_is_an_object_with_two_connections():
 
 def test_default_object_is_not_a_line():
     assert not Object().is_line
-
-def test_object_with_one_connection_is_not_a_line():
-    obj1 = Object(obj_id='1')
-    obj = Object(
-        connections=(
-            Connection(to_id=obj1.obj_id),
-        )
-    )
-    assert not obj.is_line
 
 def test_connection_points_to_object():
     obj1 = Object(obj_id='1')
@@ -82,6 +79,12 @@ def test_object_has_line_sub_component():
     obj1 = Object(obj_id='1')
     obj2 = Object(obj_id='2')
     obj = Object(
+        attributes={
+            'conn_endpoints' : [
+                (0, 0),
+                (1, 1),
+            ]
+        },
         connections=(
             Connection(to_id=obj1.obj_id),
             Connection(to_id=obj2.obj_id),
@@ -120,6 +123,12 @@ def test_line_has_connections_to_from_objects():
     obj1 = Object(obj_id='1')
     obj2 = Object(obj_id='2')
     obj = Object(
+        attributes={
+            'conn_endpoints' : [
+                (0, 0),
+                (1, 1),
+            ]
+        },
         connections=(
             Connection(to_id=obj1.obj_id),
             Connection(to_id=obj2.obj_id),
@@ -146,6 +155,12 @@ def test_object_connects_to_other_objects_via_connections():
     obj1 = Object(obj_id='1')
     obj2 = Object(obj_id='2')
     obj = Object(
+        attributes={
+            'conn_endpoints' : [
+                (0, 0),
+                (1, 1),
+            ]
+        },
         connections=(
             Connection(to_id=obj1.obj_id),
             Connection(to_id=obj2.obj_id),
@@ -168,6 +183,12 @@ def test_object_connects_to_other_objects():
     obj1 = Object(obj_id='1')
     obj2 = Object(obj_id='2')
     obj = Object(
+        attributes={
+            'conn_endpoints' : [
+                (0, 0),
+                (1, 1),
+            ]
+        },
         connections=(
             Connection(to_id=obj1.obj_id),
             Connection(to_id=obj2.obj_id),

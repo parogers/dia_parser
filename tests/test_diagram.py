@@ -101,6 +101,12 @@ def test_diagram_iterates_over_lines():
     obj1 = Object(obj_id='1')
     obj2 = Object(obj_id='2')
     obj = Object(
+        attributes={
+            'conn_endpoints' : [
+                (0, 0),
+                (1, 1),
+            ]
+        },
         connections=(
             Connection(to_id=obj1.obj_id),
             Connection(to_id=obj2.obj_id),

@@ -111,11 +111,19 @@ class Object(Node):
             self._line = LineComponent(self)
 
     def __repr__(self):
-        return '<Object id="{}" type="{}" version="{}">'.format(
+        return '<Object id="{}" type="{}" is_line={}>'.format(
             self.obj_id,
             self.obj_type,
-            self.version
+            self.is_line
         )
+
+    @property
+    def id(self):
+        return self.obj_id
+
+    @property
+    def type(self):
+        return self.obj_type
 
     @property
     def as_line(self):
@@ -125,7 +133,14 @@ class Object(Node):
 
     @property
     def is_line(self):
-        return self.connections and len(self.connections) == 2
+        return bool(
+            self.attributes and (
+                self.attributes.get('conn_endpoints') or
+                self.attributes.get('orth_points') or
+                self.attributes.get('bez_points') or
+                self.attributes.get('poly_points')
+            )
+        )
 
     @property
     def connected_to(self):
