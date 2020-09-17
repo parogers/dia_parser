@@ -25,32 +25,28 @@ class LineComponent:
         self.obj = obj
 
     @property
-    def connections(self):
-        return self.obj.connections
-
-    @property
     def connection_to(self):
         '''The connection representing the head of this line object (throws AssertionError if not a line)'''
 
-        return self.connections[1]
+        return self.obj.connections_by_handle.get('1')
 
     @property
     def connection_from(self):
         '''The connection representing the tail of this line object (throws AssertionError if not a line)'''
 
-        return self.connections[0]
+        return self.obj.connections_by_handle.get('0')
 
     @property
     def connected_to(self):
         '''The object pointed to by the head of this line (throws AssertionError if not a line)'''
 
-        return self.connection_to.to
+        return self.connection_to and self.connection_to.to
 
     @property
     def connected_from(self):
         '''The object pointed to by the tail of this line (throws AssertionError if not a line)'''
 
-        return self.connection_from.to
+        return self.connection_from and self.connection_from.to
 
 
 class Node:
@@ -85,7 +81,7 @@ class Object(Node):
     obj_type = ''
     version = ''
     attributes = None
-    connections = None
+    connection_by_handle = None
     _line = None
 
     def __init__(
@@ -103,9 +99,10 @@ class Object(Node):
 
         if not connections: connections = []
 
-        self.connections = list(connections)
-        for conn in self.connections:
+        self.connections_by_handle = {}
+        for conn in connections:
             conn.obj = self
+            self.connections_by_handle[conn.handle] = conn
 
         if self.is_line:
             self._line = LineComponent(self)
@@ -116,6 +113,10 @@ class Object(Node):
             self.obj_type,
             self.is_line
         )
+
+    @property
+    def connections(self):
+        return list(self.connections_by_handle.values())
 
     @property
     def id(self):
@@ -133,6 +134,10 @@ class Object(Node):
 
     @property
     def is_line(self):
+        '''Returns true iff this object looks like a line. If true, the as_line 
+        property will be accessible. if false, accessing as_line will throw
+        an exception.'''
+
         return bool(
             self.attributes and (
                 self.attributes.get('conn_endpoints') or
@@ -164,6 +169,16 @@ class Object(Node):
             conn.to for conn in self.connected_to
         ]
 
+    @property
+    def outbound_lines(self):
+        '''A list of lines connected to this object via their tails'''
+
+        return [
+            line_obj
+            for line_obj in self.diagram.objects.filter_lines()
+            if line_obj.connects_to(self)
+        ]
+
 
 class Connection:
     obj = None
@@ -172,6 +187,7 @@ class Connection:
     connection = 0
 
     def __init__(self, handle='', to_id='', connection=0):
+        assert handle
         self.handle = handle
         self.to_id = to_id
         self.connection = connection
