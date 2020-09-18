@@ -19,7 +19,7 @@
 import typing
 
 from .ns import NS
-from .obj import parse_object
+from .obj import parse_object, Node
 from .attributes import parse_attributes
 
 class GroupBase:
@@ -33,6 +33,14 @@ class GroupBase:
 
         return iter(self.children)
 
+    def iter_nodes(self):
+        '''Returns an iterator over all nodes (objects and groups)'''
+
+        for child in self.children:
+            yield child
+            if hasattr(child, 'children'):
+                yield from child.iter_objects()
+
     def iter_objects(self):
         for child in self.children:
             if hasattr(child, 'children'):
@@ -41,7 +49,7 @@ class GroupBase:
                 yield child
 
 
-class Group(GroupBase):
+class Group(GroupBase, Node):
     '''Represents a dia group node.'''
 
     attributes = None
@@ -65,6 +73,10 @@ class Layer(GroupBase):
         self.visible = visible
         self.connectable = connectable
         self.active = active
+
+    @property
+    def is_layer(self):
+        return True
 
 
 def parse_group_base(parent_node):

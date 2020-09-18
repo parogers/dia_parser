@@ -27,7 +27,7 @@ def test_object_diagram_property():
     diagram = Diagram(
         DiagramData(),
         layers=[
-            Group([
+            Layer([
                 Group([
                     obj,
                 ])
@@ -40,9 +40,15 @@ def test_line_is_an_object_with_two_connections():
     obj1 = Object(obj_id='1')
     obj2 = Object(obj_id='2')
     obj = Object(
+        attributes={
+            'conn_endpoints' : [
+                (0, 0),
+                (1, 1),
+            ]
+        },
         connections=(
-            Connection(to_id=obj1.obj_id),
-            Connection(to_id=obj2.obj_id)
+            Connection(handle=0, to_id=obj1.obj_id),
+            Connection(handle=1, to_id=obj2.obj_id)
         )
     )
     assert obj.is_line
@@ -50,20 +56,11 @@ def test_line_is_an_object_with_two_connections():
 def test_default_object_is_not_a_line():
     assert not Object().is_line
 
-def test_object_with_one_connection_is_not_a_line():
-    obj1 = Object(obj_id='1')
-    obj = Object(
-        connections=(
-            Connection(to_id=obj1.obj_id),
-        )
-    )
-    assert not obj.is_line
-
 def test_connection_points_to_object():
     obj1 = Object(obj_id='1')
     obj2 = Object(
         connections=(
-            Connection(to_id=obj1.obj_id),
+            Connection(handle=0, to_id=obj1.obj_id),
         )
     )
     diagram = Diagram(
@@ -82,9 +79,15 @@ def test_object_has_line_sub_component():
     obj1 = Object(obj_id='1')
     obj2 = Object(obj_id='2')
     obj = Object(
+        attributes={
+            'conn_endpoints' : [
+                (0, 0),
+                (1, 1),
+            ]
+        },
         connections=(
-            Connection(to_id=obj1.obj_id),
-            Connection(to_id=obj2.obj_id),
+            Connection(handle=0, to_id=obj1.obj_id),
+            Connection(handle=1, to_id=obj2.obj_id),
         )
     )
     diagram = Diagram(
@@ -120,9 +123,15 @@ def test_line_has_connections_to_from_objects():
     obj1 = Object(obj_id='1')
     obj2 = Object(obj_id='2')
     obj = Object(
+        attributes={
+            'conn_endpoints' : [
+                (0, 0),
+                (1, 1),
+            ]
+        },
         connections=(
-            Connection(to_id=obj1.obj_id),
-            Connection(to_id=obj2.obj_id),
+            Connection(handle=0, to_id=obj1.obj_id),
+            Connection(handle=1, to_id=obj2.obj_id),
         )
     )
     diagram = Diagram(
@@ -142,13 +151,34 @@ def test_line_has_connections_to_from_objects():
     assert obj.as_line.connected_from == obj1
     assert obj.as_line.connected_to == obj2
 
-def test_object_connects_to_other_objects_via_connections():
+def test_object_diagram_property():
+    obj = Object()
+    layer = Layer([
+        Group([
+            obj,
+        ])
+    ])
+    diagram = Diagram(
+        DiagramData(),
+        layers=[
+            layer,
+        ]
+    )
+    assert obj.layer == layer
+
+def test_property_connected_to_this():
     obj1 = Object(obj_id='1')
     obj2 = Object(obj_id='2')
     obj = Object(
+        attributes={
+            'conn_endpoints' : [
+                (0, 0),
+                (1, 1),
+            ]
+        },
         connections=(
-            Connection(to_id=obj1.obj_id),
-            Connection(to_id=obj2.obj_id),
+            Connection(handle=0, to_id=obj1.obj_id),
+            Connection(handle=1, to_id=obj2.obj_id),
         )
     )
     diagram = Diagram(
@@ -162,27 +192,4 @@ def test_object_connects_to_other_objects_via_connections():
         ]
     )
 
-    assert obj1.connected_to == [obj.connections[1]]
-
-def test_object_connects_to_other_objects():
-    obj1 = Object(obj_id='1')
-    obj2 = Object(obj_id='2')
-    obj = Object(
-        connections=(
-            Connection(to_id=obj1.obj_id),
-            Connection(to_id=obj2.obj_id),
-        )
-    )
-    diagram = Diagram(
-        DiagramData(),
-        layers=[
-            Layer([
-                obj1,
-                obj2,
-                obj,
-            ])
-        ]
-    )
-
-    assert obj1.connected_to_objs == [obj2]
-
+    assert obj1.connected_to_this == [obj]

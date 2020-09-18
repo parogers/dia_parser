@@ -67,3 +67,18 @@ def test_it_iterates_over_children():
     ])
 
     assert list(group1) == [obj1, obj2, group2]
+
+def test_it_iterates_over_nodes():
+    obj1 = Object()
+    obj2 = Object()
+    obj3 = Object()
+    group2 = Group([
+        obj3,
+    ])
+    group1 = Group([
+        obj1,
+        obj2,
+        group2,
+    ])
+
+    assert list(group1.iter_nodes()) == [obj1, obj2, group2, obj3]

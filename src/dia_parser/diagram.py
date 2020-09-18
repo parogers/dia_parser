@@ -40,6 +40,7 @@ class ObjectsComponent:
 class Diagram:
     layers = None
     object_map = None
+    layer_map = None
 
     def __init__(self, diagram_data, layers):
         self.objects = ObjectsComponent(self)
@@ -49,6 +50,10 @@ class Diagram:
         self.object_map = {
             obj.obj_id : obj
             for obj in self.objects
+        }
+        self.layer_map = {
+            layer.name : layer
+            for layer in self.layers
         }
 
     def __iter__(self):
@@ -60,11 +65,17 @@ class Diagram:
         '''Returns the layer matching the given name'''
 
         try:
-            return next(filter(
-                lambda layer : layer.name == name, self.layers
-            ))
-        except StopIteration:
-            raise KeyError
+            return self.layer_map[name]
+        except KeyError:
+            pass
+        raise KeyError('no such layer: ' + name)
+
+    @property
+    def nodes(self):
+        '''An iterator over all nodes (objects and groups) in this diagram'''
+
+        for layer in self.layers:
+            yield from layer.iter_nodes()
 
 
 class DiagramData:
