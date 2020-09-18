@@ -47,8 +47,8 @@ def test_line_is_an_object_with_two_connections():
             ]
         },
         connections=(
-            Connection(handle='0', to_id=obj1.obj_id),
-            Connection(handle='1', to_id=obj2.obj_id)
+            Connection(handle=0, to_id=obj1.obj_id),
+            Connection(handle=1, to_id=obj2.obj_id)
         )
     )
     assert obj.is_line
@@ -60,7 +60,7 @@ def test_connection_points_to_object():
     obj1 = Object(obj_id='1')
     obj2 = Object(
         connections=(
-            Connection(handle='0', to_id=obj1.obj_id),
+            Connection(handle=0, to_id=obj1.obj_id),
         )
     )
     diagram = Diagram(
@@ -86,8 +86,8 @@ def test_object_has_line_sub_component():
             ]
         },
         connections=(
-            Connection(handle='0', to_id=obj1.obj_id),
-            Connection(handle='1', to_id=obj2.obj_id),
+            Connection(handle=0, to_id=obj1.obj_id),
+            Connection(handle=1, to_id=obj2.obj_id),
         )
     )
     diagram = Diagram(
@@ -130,8 +130,8 @@ def test_line_has_connections_to_from_objects():
             ]
         },
         connections=(
-            Connection(handle='0', to_id=obj1.obj_id),
-            Connection(handle='1', to_id=obj2.obj_id),
+            Connection(handle=0, to_id=obj1.obj_id),
+            Connection(handle=1, to_id=obj2.obj_id),
         )
     )
     diagram = Diagram(
@@ -162,8 +162,8 @@ def test_object_connects_to_other_objects_via_connections():
             ]
         },
         connections=(
-            Connection(handle='0', to_id=obj1.obj_id),
-            Connection(handle='1', to_id=obj2.obj_id),
+            Connection(handle=0, to_id=obj1.obj_id),
+            Connection(handle=1, to_id=obj2.obj_id),
         )
     )
     diagram = Diagram(
@@ -190,8 +190,8 @@ def test_object_connects_to_other_objects():
             ]
         },
         connections=(
-            Connection(handle='0', to_id=obj1.obj_id),
-            Connection(handle='1', to_id=obj2.obj_id),
+            Connection(handle=0, to_id=obj1.obj_id),
+            Connection(handle=1, to_id=obj2.obj_id),
         )
     )
     diagram = Diagram(

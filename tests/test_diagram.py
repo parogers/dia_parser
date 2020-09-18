@@ -108,8 +108,8 @@ def test_diagram_iterates_over_lines():
             ]
         },
         connections=(
-            Connection(handle='0', to_id=obj1.obj_id),
-            Connection(handle='1', to_id=obj2.obj_id),
+            Connection(handle=0, to_id=obj1.obj_id),
+            Connection(handle=1, to_id=obj2.obj_id),
         )
     )
     diagram = Diagram(
@@ -139,8 +139,8 @@ def test_diagram_iterates_over_objects():
     obj2 = Object(obj_id='2')
     obj = Object(
         connections=(
-            Connection(handle='0', to_id=obj1.obj_id),
-            Connection(handle='1', to_id=obj2.obj_id),
+            Connection(handle=0, to_id=obj1.obj_id),
+            Connection(handle=1, to_id=obj2.obj_id),
         )
     )
     diagram = Diagram(
@@ -161,8 +161,8 @@ def test_diagram_iterates_over_nodes():
     obj2 = Object(obj_id='2')
     obj = Object(
         connections=(
-            Connection(handle='0', to_id=obj1.obj_id),
-            Connection(handle='1', to_id=obj2.obj_id),
+            Connection(handle=0, to_id=obj1.obj_id),
+            Connection(handle=1, to_id=obj2.obj_id),
         )
     )
     group = Group([

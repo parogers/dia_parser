@@ -28,13 +28,26 @@ class LineComponent:
     def connection_to(self):
         '''The connection representing the head of this line object (throws AssertionError if not a line)'''
 
-        return self.obj.connections_by_handle.get('1')
+        if self.obj.attributes.get('bez_points'):
+            handle = 3
+        elif self.obj.attributes.get('poly_points'):
+            # The last handle is the "to" connection, except for #0 which is always "from"
+            handles = sorted(self.obj.connections_by_handle.keys())
+            if not handles:
+                return None
+            handle = handles[-1]
+            if handle == 0:
+                return None
+        else:
+            handle = 1
+
+        return self.obj.connections_by_handle.get(handle)
 
     @property
     def connection_from(self):
         '''The connection representing the tail of this line object (throws AssertionError if not a line)'''
 
-        return self.obj.connections_by_handle.get('0')
+        return self.obj.connections_by_handle.get(0)
 
     @property
     def connected_to(self):
@@ -182,12 +195,12 @@ class Object(Node):
 
 class Connection:
     obj = None
-    handle = ''
+    handle = None
     to_id = ''
     connection = 0
 
-    def __init__(self, handle='', to_id='', connection=0):
-        assert handle
+    def __init__(self, handle=None, to_id='', connection=0):
+        assert handle != None and type(handle) == int
         self.handle = handle
         self.to_id = to_id
         self.connection = connection
@@ -201,7 +214,7 @@ class Connection:
 
 def parse_connection(conn_node):
     return Connection(
-        handle=conn_node.attrib['handle'],
+        handle=int(conn_node.attrib['handle']),
         to_id=conn_node.attrib['to'],
         connection=conn_node.attrib['connection'],
     )
