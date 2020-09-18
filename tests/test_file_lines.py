@@ -50,3 +50,22 @@ def test_connection_handles_for_basic_line():
 
     assert line.as_line.connected_from == box1
     assert line.as_line.connected_to == box2
+
+def test_outbound_lines():
+    diagram = parse_dia_file(SRC)
+
+    box1 = diagram.objects['O0']
+    box2 = diagram.objects['O1']
+
+    assert len(box1.outbound_lines) == 5
+    assert len(box2.outbound_lines) == 0
+
+def test_inbound_lines():
+    diagram = parse_dia_file(SRC)
+
+    box1 = diagram.objects['O0']
+    box2 = diagram.objects['O1']
+
+    assert len(box1.inbound_lines) == 0
+    assert len(box2.inbound_lines) == 5
+

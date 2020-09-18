@@ -189,7 +189,17 @@ class Object(Node):
         return [
             line_obj
             for line_obj in self.diagram.objects.filter_lines()
-            if line_obj.connects_to(self)
+            if line_obj.as_line.connected_from == self
+        ]
+
+    @property
+    def inbound_lines(self):
+        '''A list of lines connected to this object via their heads'''
+
+        return [
+            line_obj
+            for line_obj in self.diagram.objects.filter_lines()
+            if line_obj.as_line.connected_to == self
         ]
 
 
