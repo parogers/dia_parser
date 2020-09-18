@@ -165,3 +165,31 @@ def test_object_diagram_property():
         ]
     )
     assert obj.layer == layer
+
+def test_property_connected_to_this():
+    obj1 = Object(obj_id='1')
+    obj2 = Object(obj_id='2')
+    obj = Object(
+        attributes={
+            'conn_endpoints' : [
+                (0, 0),
+                (1, 1),
+            ]
+        },
+        connections=(
+            Connection(handle=0, to_id=obj1.obj_id),
+            Connection(handle=1, to_id=obj2.obj_id),
+        )
+    )
+    diagram = Diagram(
+        DiagramData(),
+        layers=[
+            Layer([
+                obj1,
+                obj2,
+                obj,
+            ])
+        ]
+    )
+
+    assert obj1.connected_to_this == [obj]

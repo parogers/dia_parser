@@ -196,6 +196,16 @@ class Object(Node):
             (line_obj, line_obj.as_line.connected_from) for line_obj in self.inbound_lines
         ]
 
+    @property
+    def connected_to_this(self):
+        '''The list of objects connected to this object'''
+
+        return [
+            obj
+            for obj in self.diagram.objects
+            if self in (conn.to for conn in obj.connections)
+        ]
+
 
 class Connection:
     obj = None

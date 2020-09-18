@@ -32,3 +32,15 @@ lines = obj.outbound_lines
 # List of line objects pointing at the given obj
 lines = obj.inbound_lines
 
+# List of (line, obj) tuples pointing away from obj
+for line, other in obj.outbound:
+    pass
+
+# List of (line, obj) tuples pointing at obj
+for line, other in obj.inbound:
+    pass
+
+# List of objects connected to the given object (ie the objects
+# that have a connection pointing to the given object)
+objs = obj.connected_to_this
+
