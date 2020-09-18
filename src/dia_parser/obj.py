@@ -161,28 +161,6 @@ class Object(Node):
         )
 
     @property
-    def connected_to(self):
-        '''A list of connections from this object to other objects in the diagram. 
-        The list contains Connection instance with the 'to' property pointing to
-        other objects.'''
-
-        return [
-            obj.as_line.connection_to
-            for obj in filter(
-                lambda obj : obj.as_line.connected_from == self,
-                self.diagram.objects.filter_lines()
-            )
-        ]
-
-    @property
-    def connected_to_objs(self):
-        '''Similar to connected_to, but returns a list of Objects instead of Connections'''
-
-        return [
-            conn.to for conn in self.connected_to
-        ]
-
-    @property
     def outbound_lines(self):
         '''A list of lines connected to this object via their tails'''
 
