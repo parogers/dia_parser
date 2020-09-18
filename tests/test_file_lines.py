@@ -69,3 +69,30 @@ def test_inbound_lines():
     assert len(box1.inbound_lines) == 0
     assert len(box2.inbound_lines) == 5
 
+def test_outbound_lines_and_objs():
+    diagram = parse_dia_file(SRC)
+
+    box1 = diagram.objects['O0']
+    box2 = diagram.objects['O1']
+
+    assert len(box1.outbound) == 5
+    assert len(box2.outbound) == 0
+
+    assert all(
+        obj == box2 for (_, obj) in box1.outbound
+    )
+
+def test_inbound_lines_and_objs():
+    diagram = parse_dia_file(SRC)
+
+    box1 = diagram.objects['O0']
+    box2 = diagram.objects['O1']
+
+    assert len(box1.inbound) == 0
+    assert len(box2.inbound) == 5
+
+    assert all(
+        obj == box1 for (_, obj) in box2.inbound
+    )
+
+

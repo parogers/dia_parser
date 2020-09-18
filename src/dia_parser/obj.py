@@ -202,6 +202,22 @@ class Object(Node):
             if line_obj.as_line.connected_to == self
         ]
 
+    @property
+    def outbound(self):
+        '''A list of (line, to_obj) tuples where line connects from this object to to_obj'''
+
+        return [
+            (line_obj, line_obj.as_line.connected_to) for line_obj in self.outbound_lines
+        ]
+
+    @property
+    def inbound(self):
+        '''A list of (line, from_obj) tuples where line connects from from_obj to this object'''
+
+        return [
+            (line_obj, line_obj.as_line.connected_from) for line_obj in self.inbound_lines
+        ]
+
 
 class Connection:
     obj = None
