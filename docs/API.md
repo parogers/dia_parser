@@ -1,8 +1,34 @@
+# Table of Contents
+
+* [dia\_parser/diagram](#dia_parser/diagram)
+  * [Diagram](#dia_parser/diagram.Diagram)
+    * [\_\_iter\_\_](#dia_parser/diagram.Diagram.__iter__)
+    * [\_\_getitem\_\_](#dia_parser/diagram.Diagram.__getitem__)
+    * [nodes](#dia_parser/diagram.Diagram.nodes)
+* [dia\_parser/obj](#dia_parser/obj)
+  * [LineComponent](#dia_parser/obj.LineComponent)
+    * [connection\_to](#dia_parser/obj.LineComponent.connection_to)
+    * [connection\_from](#dia_parser/obj.LineComponent.connection_from)
+    * [connected\_to](#dia_parser/obj.LineComponent.connected_to)
+    * [connected\_from](#dia_parser/obj.LineComponent.connected_from)
+  * [Node](#dia_parser/obj.Node)
+    * [layer](#dia_parser/obj.Node.layer)
+    * [diagram](#dia_parser/obj.Node.diagram)
+  * [Object](#dia_parser/obj.Object)
+    * [is\_line](#dia_parser/obj.Object.is_line)
+    * [outbound\_lines](#dia_parser/obj.Object.outbound_lines)
+    * [inbound\_lines](#dia_parser/obj.Object.inbound_lines)
+    * [outbound](#dia_parser/obj.Object.outbound)
+    * [inbound](#dia_parser/obj.Object.inbound)
+    * [connected\_to\_this](#dia_parser/obj.Object.connected_to_this)
+  * [Connection](#dia_parser/obj.Connection)
+    * [to](#dia_parser/obj.Connection.to)
+
 <a name="dia_parser/diagram"></a>
 # dia\_parser/diagram
 
 <a name="dia_parser/diagram.Diagram"></a>
-## Diagram Objects
+## Diagram
 
 ```python
 class Diagram()
@@ -40,7 +66,7 @@ An iterator over all nodes (objects and groups) in this diagram
 # dia\_parser/obj
 
 <a name="dia_parser/obj.LineComponent"></a>
-## LineComponent Objects
+## LineComponent
 
 ```python
 class LineComponent()
@@ -87,7 +113,7 @@ The object pointed to by the head of this line (throws AssertionError if not a l
 The object pointed to by the tail of this line (throws AssertionError if not a line)
 
 <a name="dia_parser/obj.Node"></a>
-## Node Objects
+## Node
 
 ```python
 class Node()
@@ -116,7 +142,7 @@ The layer containing this object
 The diagram containing this object
 
 <a name="dia_parser/obj.Object"></a>
-## Object Objects
+## Object
 
 ```python
 class Object(Node)
@@ -185,7 +211,7 @@ A list of (line, from_obj) tuples where line connects from from_obj to this obje
 The list of objects connected to this object
 
 <a name="dia_parser/obj.Connection"></a>
-## Connection Objects
+## Connection
 
 ```python
 class Connection()
