@@ -1,5 +1,7 @@
 # Table of Contents
 
+* [dia\_parser/parse](#dia_parser/parse)
+  * [read\_dia\_file](#dia_parser/parse.read_dia_file)
 * [dia\_parser/diagram](#dia_parser/diagram)
   * [Diagram](#dia_parser/diagram.Diagram)
     * [\_\_iter\_\_](#dia_parser/diagram.Diagram.__iter__)
@@ -23,6 +25,28 @@
     * [connected\_to\_this](#dia_parser/obj.Object.connected_to_this)
   * [Connection](#dia_parser/obj.Connection)
     * [to](#dia_parser/obj.Connection.to)
+* [dia\_parser/layer](#dia_parser/layer)
+  * [GroupBase](#dia_parser/layer.GroupBase)
+    * [\_\_iter\_\_](#dia_parser/layer.GroupBase.__iter__)
+    * [iter\_nodes](#dia_parser/layer.GroupBase.iter_nodes)
+  * [Group](#dia_parser/layer.Group)
+  * [Layer](#dia_parser/layer.Layer)
+  * [parse\_group\_base](#dia_parser/layer.parse_group_base)
+  * [parse\_layer](#dia_parser/layer.parse_layer)
+  * [parse\_group](#dia_parser/layer.parse_group)
+* [dia\_parser/attributes](#dia_parser/attributes)
+
+<a name="dia_parser/parse"></a>
+# dia\_parser/parse
+
+<a name="dia_parser/parse.read_dia_file"></a>
+#### read\_dia\_file
+
+```python
+read_dia_file(src)
+```
+
+Reads a .dia file (compressed or uncompressed) and returns the XML data as a string
 
 <a name="dia_parser/diagram"></a>
 # dia\_parser/diagram
@@ -226,4 +250,80 @@ class Connection()
 ```
 
 The object instance pointed to by this connection
+
+<a name="dia_parser/layer"></a>
+# dia\_parser/layer
+
+<a name="dia_parser/layer.GroupBase"></a>
+## GroupBase
+
+```python
+class GroupBase()
+```
+
+<a name="dia_parser/layer.GroupBase.__iter__"></a>
+#### \_\_iter\_\_
+
+```python
+ | __iter__()
+```
+
+Returns an iterator over all children
+
+<a name="dia_parser/layer.GroupBase.iter_nodes"></a>
+#### iter\_nodes
+
+```python
+ | iter_nodes()
+```
+
+Returns an iterator over all nodes (objects and groups)
+
+<a name="dia_parser/layer.Group"></a>
+## Group
+
+```python
+class Group(GroupBase,  Node)
+```
+
+Represents a dia group node.
+
+<a name="dia_parser/layer.Layer"></a>
+## Layer
+
+```python
+class Layer(GroupBase)
+```
+
+Represents a dia layer node.
+
+<a name="dia_parser/layer.parse_group_base"></a>
+#### parse\_group\_base
+
+```python
+parse_group_base(parent_node)
+```
+
+Returns a tuple (Object list, Group list, Attribute dict) from the given top-level XML node
+
+<a name="dia_parser/layer.parse_layer"></a>
+#### parse\_layer
+
+```python
+parse_layer(layer_node)
+```
+
+Returns a Layer instance given a layer XML node
+
+<a name="dia_parser/layer.parse_group"></a>
+#### parse\_group
+
+```python
+parse_group(group_node)
+```
+
+Returns a Group instance given a group XML node
+
+<a name="dia_parser/attributes"></a>
+# dia\_parser/attributes
 
