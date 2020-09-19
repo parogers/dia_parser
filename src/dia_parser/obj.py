@@ -21,6 +21,8 @@ from .attributes import parse_attributes
 
 
 class LineComponent:
+    '''Provides methods for interpreting/treating a dia object as a line'''
+
     def __init__(self, obj):
         self.obj = obj
 
@@ -90,6 +92,16 @@ class Node:
 
 
 class Object(Node):
+    '''Represents a dia object node.
+
+    Attributes:
+    id -- the object ID (unique across the diagram)
+    type -- a string describing the type (eg "Flowchart - Box")
+    version -- the version
+    attributes -- a dictionary of attributes on the object
+    parent -- the parent to this object (ie Layer or Group instance)
+    '''
+
     obj_id = ''
     obj_type = ''
     version = ''
@@ -141,6 +153,8 @@ class Object(Node):
 
     @property
     def as_line(self):
+        '''The LineComponent instance for this object, if it reads as a line type object. (ie is_line=True)'''
+
         if not self.is_line:
             raise ValueError('object is not a line')
         return self._line
@@ -208,6 +222,15 @@ class Object(Node):
 
 
 class Connection:
+    '''Represents a dia connection node.
+
+    Attributes:
+    obj -- the (source) object to which this connection belongs
+    handle -- the handle number of of this connection, used to identify where on the source object the connection is
+    to_id -- the (target) object ID to which this connection is attached
+    connection -- the connection point (number) on the attached object
+    '''
+
     obj = None
     handle = None
     to_id = ''

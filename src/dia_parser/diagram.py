@@ -22,22 +22,37 @@ from .layer import parse_layer
 from .ns import NS
 
 class ObjectsComponent:
+    '''Used to lookup objects by ID in a diagram, or list them'''
+
     def __init__(self, diagram):
         self.diagram = diagram
 
     def __iter__(self):
+        '''Iterates over all objects in the diagram'''
+
         for layer in self.diagram.layers:
             yield from layer.iter_objects()
 
     def __getitem__(self, obj_name):
+        '''Lookup an object given the ID'''
+
         return self.diagram.object_map[obj_name]
 
     def filter_lines(self):
+        '''Returns an iterator over all line type objects in the diagram'''
+
         return filter(
             lambda obj : hasattr(obj, 'is_line') and obj.is_line,  self
         )
 
 class Diagram:
+    '''Represents a dia diagram node.
+
+    Attributes:
+    layers -- list of Layer instances
+    objects -- an ObjectsComponent instance used to access objects in the diagram
+    '''
+
     layers = None
     object_map = None
     layer_map = None
@@ -93,6 +108,8 @@ def parse_diagramdata(diagramdata_node):
 
 
 def parse_diagram(diagram_node):
+    '''Return a Diagram instance given an XML node'''
+
     node = diagram_node.find(NS + 'diagramdata')
     if node:
         diagram_data = parse_diagramdata(node)

@@ -94,6 +94,8 @@ def parse_attribute_value(attrib_node):
     return ''
 
 def parse_attributes(parent_node):
+    '''Return a dictionary representing the attributes/values found under the given dia XML node'''
+
     attributes = {}
 
     for attrib_node in parent_node.findall(NS + 'attribute'):
