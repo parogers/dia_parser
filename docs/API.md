@@ -7,6 +7,7 @@
     * [\_\_iter\_\_](#dia_parser/diagram.Diagram.__iter__)
     * [\_\_getitem\_\_](#dia_parser/diagram.Diagram.__getitem__)
     * [nodes](#dia_parser/diagram.Diagram.nodes)
+  * [parse\_diagram](#dia_parser/diagram.parse_diagram)
 * [dia\_parser/obj](#dia_parser/obj)
   * [LineComponent](#dia_parser/obj.LineComponent)
     * [connection\_to](#dia_parser/obj.LineComponent.connection_to)
@@ -58,6 +59,12 @@ Reads a .dia file (compressed or uncompressed) and returns the XML data as a str
 class Diagram()
 ```
 
+Represents a dia diagram node.
+
+**Attributes**:
+
+- `layers` - list of Layer instances
+
 <a name="dia_parser/diagram.Diagram.__iter__"></a>
 #### \_\_iter\_\_
 
@@ -85,6 +92,15 @@ Returns the layer matching the given name
 ```
 
 An iterator over all nodes (objects and groups) in this diagram
+
+<a name="dia_parser/diagram.parse_diagram"></a>
+#### parse\_diagram
+
+```python
+parse_diagram(diagram_node)
+```
+
+Return a Diagram instance given an XML node
 
 <a name="dia_parser/obj"></a>
 # dia\_parser/obj

@@ -38,6 +38,12 @@ class ObjectsComponent:
         )
 
 class Diagram:
+    '''Represents a dia diagram node.
+
+    Attributes:
+    layers -- list of Layer instances
+    '''
+
     layers = None
     object_map = None
     layer_map = None
@@ -93,6 +99,8 @@ def parse_diagramdata(diagramdata_node):
 
 
 def parse_diagram(diagram_node):
+    '''Return a Diagram instance given an XML node'''
+
     node = diagram_node.find(NS + 'diagramdata')
     if node:
         diagram_data = parse_diagramdata(node)
