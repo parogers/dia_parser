@@ -1,6 +1,6 @@
 # dia_parser
 
-A python module for parsing dia diagram files.
+A python module for parsing [dia](https://wiki.gnome.org/Apps/Dia/) diagram files.
 
 ## API
 
