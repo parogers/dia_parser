@@ -3,6 +3,10 @@
 * [dia\_parser/parse](#dia_parser/parse)
   * [read\_dia\_file](#dia_parser/parse.read_dia_file)
 * [dia\_parser/diagram](#dia_parser/diagram)
+  * [ObjectsComponent](#dia_parser/diagram.ObjectsComponent)
+    * [\_\_iter\_\_](#dia_parser/diagram.ObjectsComponent.__iter__)
+    * [\_\_getitem\_\_](#dia_parser/diagram.ObjectsComponent.__getitem__)
+    * [filter\_lines](#dia_parser/diagram.ObjectsComponent.filter_lines)
   * [Diagram](#dia_parser/diagram.Diagram)
     * [\_\_iter\_\_](#dia_parser/diagram.Diagram.__iter__)
     * [\_\_getitem\_\_](#dia_parser/diagram.Diagram.__getitem__)
@@ -18,6 +22,7 @@
     * [layer](#dia_parser/obj.Node.layer)
     * [diagram](#dia_parser/obj.Node.diagram)
   * [Object](#dia_parser/obj.Object)
+    * [as\_line](#dia_parser/obj.Object.as_line)
     * [is\_line](#dia_parser/obj.Object.is_line)
     * [outbound\_lines](#dia_parser/obj.Object.outbound_lines)
     * [inbound\_lines](#dia_parser/obj.Object.inbound_lines)
@@ -36,6 +41,7 @@
   * [parse\_layer](#dia_parser/layer.parse_layer)
   * [parse\_group](#dia_parser/layer.parse_group)
 * [dia\_parser/attributes](#dia_parser/attributes)
+  * [parse\_attributes](#dia_parser/attributes.parse_attributes)
 
 <a name="dia_parser/parse"></a>
 # dia\_parser/parse
@@ -52,6 +58,42 @@ Reads a .dia file (compressed or uncompressed) and returns the XML data as a str
 <a name="dia_parser/diagram"></a>
 # dia\_parser/diagram
 
+<a name="dia_parser/diagram.ObjectsComponent"></a>
+## ObjectsComponent
+
+```python
+class ObjectsComponent()
+```
+
+Used to lookup objects by ID in a diagram, or list them
+
+<a name="dia_parser/diagram.ObjectsComponent.__iter__"></a>
+#### \_\_iter\_\_
+
+```python
+ | __iter__()
+```
+
+Iterates over all objects in the diagram
+
+<a name="dia_parser/diagram.ObjectsComponent.__getitem__"></a>
+#### \_\_getitem\_\_
+
+```python
+ | __getitem__(obj_name)
+```
+
+Lookup an object given the ID
+
+<a name="dia_parser/diagram.ObjectsComponent.filter_lines"></a>
+#### filter\_lines
+
+```python
+ | filter_lines()
+```
+
+Returns an iterator over all line type objects in the diagram
+
 <a name="dia_parser/diagram.Diagram"></a>
 ## Diagram
 
@@ -64,6 +106,7 @@ Represents a dia diagram node.
 **Attributes**:
 
 - `layers` - list of Layer instances
+- `objects` - an ObjectsComponent instance used to access objects in the diagram
 
 <a name="dia_parser/diagram.Diagram.__iter__"></a>
 #### \_\_iter\_\_
@@ -111,6 +154,8 @@ Return a Diagram instance given an XML node
 ```python
 class LineComponent()
 ```
+
+Provides methods for interpreting/treating a dia object as a line
 
 <a name="dia_parser/obj.LineComponent.connection_to"></a>
 #### connection\_to
@@ -188,6 +233,26 @@ The diagram containing this object
 class Object(Node)
 ```
 
+Represents a dia object node.
+
+**Attributes**:
+
+- `id` - the object ID (unique across the diagram)
+- `type` - a string describing the type (eg "Flowchart - Box")
+- `version` - the version
+- `attributes` - a dictionary of attributes on the object
+- `parent` - the parent to this object (ie Layer or Group instance)
+
+<a name="dia_parser/obj.Object.as_line"></a>
+#### as\_line
+
+```python
+ | @property
+ | as_line()
+```
+
+The LineComponent instance for this object, if it reads as a line type object. (ie is_line=True)
+
 <a name="dia_parser/obj.Object.is_line"></a>
 #### is\_line
 
@@ -256,6 +321,15 @@ The list of objects connected to this object
 ```python
 class Connection()
 ```
+
+Represents a dia connection node.
+
+**Attributes**:
+
+- `obj` - the (source) object to which this connection belongs
+- `handle` - the handle number of of this connection, used to identify where on the source object the connection is
+- `to_id` - the (target) object ID to which this connection is attached
+- `connection` - the connection point (number) on the attached object
 
 <a name="dia_parser/obj.Connection.to"></a>
 #### to
@@ -342,4 +416,13 @@ Returns a Group instance given a group XML node
 
 <a name="dia_parser/attributes"></a>
 # dia\_parser/attributes
+
+<a name="dia_parser/attributes.parse_attributes"></a>
+#### parse\_attributes
+
+```python
+parse_attributes(parent_node)
+```
+
+Return a dictionary representing the attributes/values found under the given dia XML node
 
