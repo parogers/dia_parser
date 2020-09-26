@@ -45,6 +45,16 @@ class ObjectsComponent:
             lambda obj : hasattr(obj, 'is_line') and obj.is_line,  self
         )
 
+    def find(self, expr):
+        try:
+            return next(self.find_all(expr))
+        except StopIteration:
+            return None
+
+    def find_all(self, expr):
+        for obj in self:
+            yield from expr(obj)
+
 class Diagram:
     '''Represents a dia diagram node.
 
