@@ -18,7 +18,7 @@
 
 from .ns import NS
 from .attributes import parse_attributes
-
+from . import expression
 
 class LineComponent:
     '''Provides methods for interpreting/treating a dia object as a line'''
@@ -90,6 +90,10 @@ class Node:
             return self.layer.diagram
         return None
 
+class ObjectList(list):
+    def find(self, expr=expression.noop):
+        for obj in self:
+            yield from expr(obj)
 
 class Object(Node):
     '''Represents a dia object node.
@@ -192,21 +196,21 @@ class Object(Node):
     def outbound_lines(self):
         '''A list of lines connected to this object via their tails'''
 
-        return [
+        return ObjectList([
             line_obj
             for line_obj in self.diagram.objects.filter_lines()
             if line_obj.as_line.connected_from == self
-        ]
+        ])
 
     @property
     def inbound_lines(self):
         '''A list of lines connected to this object via their heads'''
 
-        return [
+        return ObjectList([
             line_obj
             for line_obj in self.diagram.objects.filter_lines()
             if line_obj.as_line.connected_to == self
-        ]
+        ])
 
     @property
     def outbound(self):
