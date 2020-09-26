@@ -140,6 +140,20 @@ class Object(Node):
         )
 
     @property
+    def text(self):
+        '''Returns the text/string attribute of this object, or None if missing.
+        Note dia text strings are stored with a leading and trailing '#' character.
+        This property returns the string with those characters removed.'''
+
+        try:
+            text = self.attributes['text']['string']
+        except KeyError:
+            return None
+        if text.startswith('#') and text.endswith('#'):
+            return text[1:-1]
+        return text
+
+    @property
     def connections(self):
         return list(self.connections_by_handle.values())
 
