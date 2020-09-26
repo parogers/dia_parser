@@ -22,6 +22,7 @@
     * [layer](#dia_parser/obj.Node.layer)
     * [diagram](#dia_parser/obj.Node.diagram)
   * [Object](#dia_parser/obj.Object)
+    * [text](#dia_parser/obj.Object.text)
     * [as\_line](#dia_parser/obj.Object.as_line)
     * [is\_line](#dia_parser/obj.Object.is_line)
     * [outbound\_lines](#dia_parser/obj.Object.outbound_lines)
@@ -242,6 +243,18 @@ Represents a dia object node.
 - `version` - the version
 - `attributes` - a dictionary of attributes on the object
 - `parent` - the parent to this object (ie Layer or Group instance)
+
+<a name="dia_parser/obj.Object.text"></a>
+#### text
+
+```python
+ | @property
+ | text()
+```
+
+Returns the text/string attribute of this object, or None if missing.
+Note dia text strings are stored with a leading and trailing '#' character. 
+This property returns the string with those characters removed.
 
 <a name="dia_parser/obj.Object.as_line"></a>
 #### as\_line
