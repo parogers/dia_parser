@@ -24,8 +24,8 @@ from dia_parser import Diagram, DiagramData, Layer, Group, Object, Connection
 
 def test_create_empty_diagram():
     diagram = Diagram(
+        [],
         DiagramData(),
-        layers=[]
     )
     assert diagram
 
@@ -35,12 +35,12 @@ def test_create_diagram_with_layers():
     layer3 = Layer([])
 
     diagram = Diagram(
-        DiagramData(),
-        layers=[
+        [
             layer1,
             layer2,
             layer3,
-        ]
+        ],
+        DiagramData(),
     )
     assert diagram.layers == [layer1, layer2, layer3]
 
@@ -48,11 +48,11 @@ def test_it_assigns_diagram_to_layer():
     layer1 = Layer([])
     layer2 = Layer([])
     diagram = Diagram(
-        DiagramData(),
-        layers=[
+        [
             layer1,
             layer2,
-        ]
+        ],
+        DiagramData(),
     )
 
     assert layer1.diagram == diagram
@@ -61,8 +61,8 @@ def test_it_assigns_diagram_to_layer():
 def test_lookup_object_by_id_raises_keyerror():
     obj = Object()
     diagram = Diagram(
+        [],
         DiagramData(),
-        layers=[]
     )
     with pytest.raises(KeyError):
         assert diagram.objects['123']
@@ -71,14 +71,14 @@ def test_lookup_object_by_id():
     obj = Object()
     obj.obj_id = '123'
     diagram = Diagram(
-        DiagramData(),
-        layers=[
+        [
             Layer([
                 Group([
                     obj,
                 ])
             ])
-        ]
+        ],
+        DiagramData(),
     )
     assert diagram.objects['123'] == obj
 
@@ -88,12 +88,12 @@ def test_diagram_iterates_layers():
     layer3 = Layer([])
 
     diagram = Diagram(
-        DiagramData(),
-        layers=[
+        [
             layer1,
             layer2,
             layer3,
-        ]
+        ],
+        DiagramData(),
     )
     assert list(diagram) == [layer1, layer2, layer3]
 
@@ -113,25 +113,25 @@ def test_diagram_iterates_over_lines():
         )
     )
     diagram = Diagram(
-        DiagramData(),
-        layers=[
+        [
             Layer([
                 obj1,
                 obj2,
                 obj,
             ])
-        ]
+        ],
+        DiagramData(),
     )
 
     assert list(diagram.objects.filter_lines()) == [obj]
 
 def test_lookup_layer_by_name():
     diagram = Diagram(
-        DiagramData(),
-        layers=[
+        [
             Layer([
             ])
-        ]
+        ],
+        DiagramData(),
     )
 
 def test_diagram_iterates_over_objects():
@@ -144,14 +144,14 @@ def test_diagram_iterates_over_objects():
         )
     )
     diagram = Diagram(
-        DiagramData(),
-        layers=[
+        [
             Layer([
                 obj1,
                 obj2,
                 obj,
             ])
-        ]
+        ],
+        DiagramData(),
     )
 
     assert list(diagram.objects) == [obj1, obj2, obj]
@@ -170,13 +170,13 @@ def test_diagram_iterates_over_nodes():
         obj2,
     ])
     diagram = Diagram(
-        DiagramData(),
-        layers=[
+        [
             Layer([
                 group,
                 obj,
             ])
-        ]
+        ],
+        DiagramData(),
     )
 
     assert list(diagram.nodes) == [group, obj1, obj2, obj]

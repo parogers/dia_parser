@@ -25,14 +25,13 @@ from dia_parser import Object, Diagram, DiagramData, Layer, Group, Connection
 def test_object_diagram_property():
     obj = Object()
     diagram = Diagram(
-        DiagramData(),
-        layers=[
+        [
             Layer([
                 Group([
                     obj,
                 ])
             ])
-        ]
+        ],
     )
     assert obj.diagram == diagram
 
@@ -64,13 +63,12 @@ def test_connection_points_to_object():
         )
     )
     diagram = Diagram(
-        DiagramData(),
-        layers=[
+        [
             Layer([
                 obj1,
                 obj2,
             ])
-        ]
+        ],
     )
     
     assert obj2.connections[0].to == obj1
@@ -91,7 +89,6 @@ def test_object_has_line_sub_component():
         )
     )
     diagram = Diagram(
-        DiagramData(),
         layers=[
             Layer([
                 obj1,
@@ -107,7 +104,6 @@ def test_object_has_line_sub_component():
 def test_non_line_object_raises_exception_as_line():
     obj = Object(obj_id='1')
     diagram = Diagram(
-        DiagramData(),
         layers=[
             Layer([
                 obj,
@@ -135,7 +131,6 @@ def test_line_has_connections_to_from_objects():
         )
     )
     diagram = Diagram(
-        DiagramData(),
         layers=[
             Layer([
                 obj1,
@@ -159,7 +154,6 @@ def test_object_diagram_property():
         ])
     ])
     diagram = Diagram(
-        DiagramData(),
         layers=[
             layer,
         ]
@@ -182,7 +176,6 @@ def test_property_connected_to_this():
         )
     )
     diagram = Diagram(
-        DiagramData(),
         layers=[
             Layer([
                 obj1,

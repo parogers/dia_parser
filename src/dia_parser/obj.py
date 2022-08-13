@@ -90,11 +90,6 @@ class Node:
             return self.layer.diagram
         return None
 
-class ObjectList(list):
-    def find(self, expr=expression.noop):
-        for obj in self:
-            yield from expr(obj)
-
 class Object(Node):
     '''Represents a dia object node.
 
@@ -180,14 +175,18 @@ class Object(Node):
     @property
     def is_line(self):
         '''Returns true iff this object looks like a line. If true, the as_line 
-        property will be accessible. if false, accessing as_line will throw
+        property will be accessible. If false, accessing as_line will throw
         an exception.'''
 
         return bool(
             self.attributes and (
+                # Straight line: (x1, y1), (x2, y2)
                 self.attributes.get('conn_endpoints') or
+                # Zig zag line (4 coordinates)
                 self.attributes.get('orth_points') or
+                # Bezier line (4 coodinates - control points)
                 self.attributes.get('bez_points') or
+                # Poly line (n coordinates)
                 self.attributes.get('poly_points')
             )
         )
@@ -196,21 +195,21 @@ class Object(Node):
     def outbound_lines(self):
         '''A list of lines connected to this object via their tails'''
 
-        return ObjectList([
+        return [
             line_obj
             for line_obj in self.diagram.objects.filter_lines()
             if line_obj.as_line.connected_from == self
-        ])
+        ]
 
     @property
     def inbound_lines(self):
         '''A list of lines connected to this object via their heads'''
 
-        return ObjectList([
+        return [
             line_obj
             for line_obj in self.diagram.objects.filter_lines()
             if line_obj.as_line.connected_to == self
-        ])
+        ]
 
     @property
     def outbound(self):
@@ -244,7 +243,8 @@ class Connection:
 
     Attributes:
     obj -- the (source) object to which this connection belongs
-    handle -- the handle number of of this connection, used to identify where on the source object the connection is
+    handle -- the handle number of this connection, used to identify where on
+        the source object the connection is
     to_id -- the (target) object ID to which this connection is attached
     connection -- the connection point (number) on the attached object
     '''

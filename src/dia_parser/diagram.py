@@ -66,8 +66,13 @@ class Diagram:
     layers = None
     object_map = None
     layer_map = None
+    diagram_data = None
 
-    def __init__(self, diagram_data, layers):
+    def __init__(self, layers, diagram_data=None):
+        if diagram_data:
+            self.diagram_data = diagram_data
+        else:
+            self.diagram_data = DiagramData({})
         self.objects = ObjectsComponent(self)
         self.layers = list(layers)
         for layer in self.layers:
@@ -132,7 +137,7 @@ def parse_diagram(diagram_node):
     )
 
     return Diagram(
+        layers,
         diagram_data,
-        layers
     )
 
